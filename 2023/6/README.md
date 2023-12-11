@@ -1,0 +1,1 @@
+Involves finding the optimal button pressing time x that satisfies the inequality x(T−x)>Dx(T−x)>D, where TT is the total time and DD is the distance. You can use quadratic equations to determine the minimum and maximum points for this inequality
