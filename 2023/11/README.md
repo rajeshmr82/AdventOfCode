@@ -47,16 +47,6 @@ The solution involves:
 - Computing the Manhattan distances between each pair of objects.
 - Summing these distances to obtain the final result.
 
-### Code
-
-```python
-def solvePartOne():
-    input_data = readInput()
-    object_positions, rows, cols = parse_input(input_data)
-    computed_sum = sum_of_shortest_paths(object_positions)
-    return computed_sum
-```
-
 ## Part 2 - Solution Explanation
 
 ### Problem Statement
