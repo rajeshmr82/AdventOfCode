@@ -38,6 +38,22 @@ def tilt_north(grid):
                     grid[row, col] = 0
     return grid
 
+def tilt_south(grid):
+    return np.flip(tilt_north(np.flip(grid, axis=0)), axis=0)
+
+def tilt_west(grid):
+    return tilt_north(grid.T).T
+
+def tilt_east(grid):
+    return tilt_south(grid.T).T
+
+def cycle(grid):
+    grid = tilt_north(grid)
+    grid = tilt_west(grid)
+    grid = tilt_south(grid)
+    grid = tilt_east(grid)
+    return grid
+
 def calculate_total_load(grid):
     height, width = grid.shape
     total_load = 0
@@ -58,7 +74,23 @@ def solve_part_one(input: str) -> int:
     return calculate_total_load(tilted_grid)
 
 def solve_part_two(input):
-    result = None
-    return result
+    grid = parse(input)
+    seen_states = {}
+    cycle_count = 0
+    target_cycles = 1000000000
+
+    while cycle_count < target_cycles:
+        grid_tuple = tuple(map(tuple, grid))
+        if grid_tuple in seen_states:
+            cycle_length = cycle_count - seen_states[grid_tuple]
+            remaining_cycles = (target_cycles - cycle_count) % cycle_length
+            for _ in range(remaining_cycles):
+                grid = cycle(grid)
+            break
+        seen_states[grid_tuple] = cycle_count
+        grid = cycle(grid)
+        cycle_count += 1
+
+    return calculate_total_load(grid)
 
 

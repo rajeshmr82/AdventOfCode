@@ -109,3 +109,77 @@ def test_solve_part_two():
     answer = puzzle.solve_part_two(input)
     print(f'Part Two : {answer}')
     # assert answer == 0  # Uncomment and update when you know the expected answer
+
+def test_cycle():
+    input_grid = """O....#....
+O.OO#....#
+.....##...
+OO.#O....O
+.O.....O#.
+O.#..O.#.#
+..O..#O..O
+.......O..
+#....###..
+#OO..#...."""
+
+    expected_after_1_cycle = """.....#....
+....#...O#
+...OO##...
+.OO#......
+.....OOO#.
+.O#...O#.#
+....O#....
+......OOOO
+#...O###..
+#..OO#...."""
+
+    expected_after_2_cycles = """.....#....
+....#...O#
+.....##...
+..O#......
+.....OOO#.
+.O#...O#.#
+....O#...O
+.......OOO
+#..OO###..
+#.OOO#...O"""
+
+    expected_after_3_cycles = """.....#....
+....#...O#
+.....##...
+..O#......
+.....OOO#.
+.O#...O#.#
+....O#...O
+.......OOO
+#...O###.O
+#.OOO#...O"""
+
+    grid = puzzle.parse(input_grid)
+    
+    for i, expected in enumerate([expected_after_1_cycle, expected_after_2_cycles, expected_after_3_cycles], 1):
+        grid = puzzle.cycle(grid)
+        expected_grid = puzzle.parse(expected)
+        np.testing.assert_array_equal(grid, expected_grid, f"Failed after {i} cycle(s)")
+
+def test_solve_part_two():
+    input_grid = """O....#....
+O.OO#....#
+.....##...
+OO.#O....O
+.O.....O#.
+O.#..O.#.#
+..O..#O..O
+.......O..
+#....###..
+#OO..#...."""
+
+    result = puzzle.solve_part_two(input_grid)
+    assert result == 64
+
+def test_solve_part_two_with_input():
+    print('Solving Part Two:')
+    input = puzzle.read_input()
+    answer = puzzle.solve_part_two(input)
+    print(f'Part Two : {answer}')
+    # assert answer == 0  # Uncomment and update when you know the expected answer
