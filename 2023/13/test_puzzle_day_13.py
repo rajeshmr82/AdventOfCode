@@ -44,25 +44,25 @@ class TestPuzzleParsing:
         ])
         
         result = parse(input_str.strip())
-        assert len(result) == 1
-        assert np.array_equal(result[0].data, expected)
+        pytest.assume(len(result) == 1)
+        pytest.assume(np.array_equal(result[0].data, expected))
 
     def test_parse_multiple_patterns(self, sample_patterns):
         result = parse(sample_patterns.strip())
-        assert len(result) == 2
+        pytest.assume(len(result) == 2)
 
     def test_parse_empty_input(self):
         input_str = ""
         result = parse(input_str)
-        assert len(result) == 0
+        pytest.assume(len(result) == 0)
 
     def test_parse_single_line_pattern(self):
         input_str = "#.##..##."
         expected = np.array([['#', '.', '#', '#', '.', '.', '#', '#', '.']])
         
         result = parse(input_str)
-        assert len(result) == 1
-        assert np.array_equal(result[0].data, expected)
+        pytest.assume(len(result) == 1)
+        pytest.assume(np.array_equal(result[0].data, expected))
 
 class TestReflections:
     @pytest.mark.parametrize("input_str, expected_reflection", [
@@ -88,7 +88,7 @@ class TestReflections:
     def test_find_reflection(self, input_str, expected_reflection):
         puzzle = Puzzle.from_string(input_str.strip())
         result = puzzle.find_reflections()
-        assert expected_reflection in result
+        pytest.assume(expected_reflection in result)
 
     def test_find_reflection_none(self):
         input_str = """
@@ -102,7 +102,7 @@ class TestReflections:
 """
         puzzle = Puzzle.from_string(input_str.strip())
         result = puzzle.find_reflections()
-        assert len(result) == 0
+        pytest.assume(len(result) == 0)
 
 class TestSmudgedReflections:
     def test_find_smudged_reflection_horizontal(self):
@@ -117,7 +117,7 @@ class TestSmudgedReflections:
 """
         puzzle = Puzzle.from_string(input_str.strip())
         result = puzzle.find_smudged_reflection()
-        assert result == (HORIZONTAL, 3)
+        pytest.assume(result == (HORIZONTAL, 3))
 
     def test_find_smudged_reflection_vertical(self):
         input_str = """
@@ -131,7 +131,7 @@ class TestSmudgedReflections:
 """
         puzzle = Puzzle.from_string(input_str.strip())
         result = puzzle.find_smudged_reflection()
-        assert result == (HORIZONTAL, 1)
+        pytest.assume(result == (HORIZONTAL, 1))
 
     @pytest.mark.parametrize("input_str, expected_reflection", [
         ("""
@@ -152,18 +152,18 @@ class TestSmudgedReflections:
     def test_find_smudged_reflection_edge_cases(self, input_str, expected_reflection):
         puzzle = Puzzle.from_string(input_str.strip())
         result = puzzle.find_smudged_reflection()
-        assert result == expected_reflection, f"Expected {expected_reflection}, but got {result}"
+        pytest.assume(result == expected_reflection, f"Expected {expected_reflection}, but got {result}")
 
 class TestReflectionSum:
     def test_calculate_reflection_sum(self, sample_patterns):
         puzzles = parse(sample_patterns.strip())
         result = calculate_reflection_sum(puzzles)
-        assert result == 405
+        pytest.assume(result == 405)
 
     def test_calculate_reflection_sum_with_smudge(self, sample_patterns):
         puzzles = parse(sample_patterns.strip())
         result = calculate_reflection_sum(puzzles, use_smudge=True)
-        assert result == 400
+        pytest.assume(result == 400)
 
     def test_calculate_reflection_sum_complex(self):
         input_str = """
@@ -201,16 +201,16 @@ class TestReflectionSum:
 """
         puzzles = parse(input_str.strip())
         result = calculate_reflection_sum(puzzles)
-        assert result == 709
+        pytest.assume(result == 709)
 
         result_with_smudge = calculate_reflection_sum(puzzles, use_smudge=True)
-        assert result_with_smudge == 800
+        pytest.assume(result_with_smudge == 800)
 
 class TestSolutions:
     def test_solvePartOne(self):
         result = solvePartOne(readInput())
-        assert result == 27300
+        pytest.assume(result == 27300)
 
     def test_solvePartTwo(self):
         result = solvePartTwo(readInput())
-        assert result == 29276
+        pytest.assume(result == 29276)
