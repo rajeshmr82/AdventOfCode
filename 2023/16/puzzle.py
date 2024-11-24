@@ -110,28 +110,36 @@ def find_best_configuration(grid):
     cols = len(grid[0])
     max_energized = 0
     best_start = None
+    memo = {}  # Dictionary to store results of previous configurations
+
+    def get_energized_count(start):
+        if start in memo:
+            return memo[start]  # Return cached result if available
+        energized_count = calculate_energized_tiles(grid, start)
+        memo[start] = energized_count  # Cache the result
+        return energized_count
 
     # Check all edge tiles
     for col in range(cols):  # Top row
-        energized_count = calculate_energized_tiles(grid, (0, col, 'down'))
+        energized_count = get_energized_count((0, col, 'down'))
         if energized_count > max_energized:
             max_energized = energized_count
             best_start = (0, col, 'down')
 
     for col in range(cols):  # Bottom row
-        energized_count = calculate_energized_tiles(grid, (rows - 1, col, 'up'))
+        energized_count = get_energized_count((rows - 1, col, 'up'))
         if energized_count > max_energized:
             max_energized = energized_count
             best_start = (rows - 1, col, 'up')
 
     for row in range(rows):  # Left column
-        energized_count = calculate_energized_tiles(grid, (row, 0, 'right'))
+        energized_count = get_energized_count((row, 0, 'right'))
         if energized_count > max_energized:
             max_energized = energized_count
             best_start = (row, 0, 'right')
 
     for row in range(rows):  # Right column
-        energized_count = calculate_energized_tiles(grid, (row, cols - 1, 'left'))
+        energized_count = get_energized_count((row, cols - 1, 'left'))
         if energized_count > max_energized:
             max_energized = energized_count
             best_start = (row, cols - 1, 'left')
