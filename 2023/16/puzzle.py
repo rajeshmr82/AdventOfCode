@@ -26,8 +26,9 @@ def solve_part_one(input):
     return calculate_energized_tiles(grid, start)
 
 def solve_part_two(input):
-    result = None
-    return result
+    grid = parse(input)  # Parse the input to get the grid
+    best_start, max_energized = find_best_configuration(grid)
+    return best_start, max_energized
 
 def calculate_energized_tiles(grid, start):
     rows = len(grid)
@@ -48,7 +49,6 @@ def calculate_energized_tiles(grid, start):
 
         if is_valid(row, col, rows, cols):
             energized.add((row, col))
-            print(f"At ({row}, {col}) going {direction}, tile: {grid[row][col]}")
             
             tile = grid[row][col]
             next_direction = direction  # Default to the current direction
@@ -78,7 +78,6 @@ def calculate_energized_tiles(grid, start):
             if is_valid(next_row, next_col, rows, cols):
                 stack.append((next_row, next_col, next_direction))  # Add next position to stack
 
-    print_final_grid(energized, rows, cols)
     return len(energized)
 
 def process_tile(tile, direction):
@@ -105,3 +104,36 @@ def print_final_grid(energized, rows, cols):
 def is_valid(row, col, rows, cols):
     """Check if the position is within the grid bounds."""
     return 0 <= row < rows and 0 <= col < cols
+
+def find_best_configuration(grid):
+    rows = len(grid)
+    cols = len(grid[0])
+    max_energized = 0
+    best_start = None
+
+    # Check all edge tiles
+    for col in range(cols):  # Top row
+        energized_count = calculate_energized_tiles(grid, (0, col, 'down'))
+        if energized_count > max_energized:
+            max_energized = energized_count
+            best_start = (0, col, 'down')
+
+    for col in range(cols):  # Bottom row
+        energized_count = calculate_energized_tiles(grid, (rows - 1, col, 'up'))
+        if energized_count > max_energized:
+            max_energized = energized_count
+            best_start = (rows - 1, col, 'up')
+
+    for row in range(rows):  # Left column
+        energized_count = calculate_energized_tiles(grid, (row, 0, 'right'))
+        if energized_count > max_energized:
+            max_energized = energized_count
+            best_start = (row, 0, 'right')
+
+    for row in range(rows):  # Right column
+        energized_count = calculate_energized_tiles(grid, (row, cols - 1, 'left'))
+        if energized_count > max_energized:
+            max_energized = energized_count
+            best_start = (row, cols - 1, 'left')
+
+    return best_start, max_energized

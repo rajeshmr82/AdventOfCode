@@ -127,3 +127,27 @@ def test_parse():
     assert puzzle.parse(input_data) == expected_output, "Test failed: Output did not match expected result."
     print("Test passed: Output matches expected result.")
 
+def test_find_best_configuration():
+    grid = [
+        r".|...\....",
+        r"|.-.\.....",
+        r".....|-...",
+        r"........|.",
+        r"..........",
+        r".........\\",
+        r"..../.\\..",
+        r".-.-/..|..",
+        r".|....-|.\\",
+        r"..//.|...."
+    ]
+    
+    best_start, max_energized = puzzle.find_best_configuration(grid)
+    
+    # Check the expected best starting position and maximum energized tiles
+    expected_best_start = (0, 3, 'down')  # Example expected start position
+    expected_max_energized = 51  # Example expected maximum energized tiles
+    
+    assert best_start == expected_best_start, f"Expected {expected_best_start}, got {best_start}"
+    assert max_energized == expected_max_energized, f"Expected {expected_max_energized}, got {max_energized}"
+
+
