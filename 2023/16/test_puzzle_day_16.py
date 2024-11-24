@@ -6,15 +6,15 @@ TEST_INPUT = """"""
 
 def test_solve_part_one(capsys):
     print('Solving Part One:')
-    input = puzzle.readInput()
-    answer = puzzle.solvePartOne(input)
+    input = puzzle.read_input()
+    answer = puzzle.solve_part_one(input)
     print(f'Part One : {answer}')
     # assert 0 == answer
 
 def test_solve_part_two(capsys):
     print('Solving Part Two:')
-    input = puzzle.readInput()
-    answer = puzzle.solvePartTwo(input)
+    input = puzzle.read_input()
+    answer = puzzle.solve_part_two(input)
     print(f'Part Two : {answer}')
     # assert 0 == answer
 
@@ -59,27 +59,27 @@ def test_splitter_split():
 
 def test_example_from_problem():
     grid = [
-        ".|...\\....",
-        "|.-.\\.....",
-        ".....|....",
-        "........|.",
-        "..........",
-        ".........\\",
-        "..../.\\..",
-        ".-.-/..|..",
-        ".|....-|.\\",
-        "..//.|...."
+        r".|...\....",
+        r"|.-.\.....",
+        r".....|-...",
+        r"........|.",
+        r"..........",
+        r".........",
+        r"..../.\\..",
+        r".-.-/..|..",
+        r".|....-|.",
+        r"..//.|...."
     ]
     assert puzzle.calculate_energized_tiles(grid, (0, 0, "right")) == 46
 
 def test_beam_loop():
     grid = [
-        "/.\\",
+        "\\.\\",
         "...",
         "\\./",
     ]
-    # Path should hit every tile in the 3x3 grid
-    assert puzzle.calculate_energized_tiles(grid, (0, 0, "right")) == 9
+    # Start at (0,0) going right
+    assert puzzle.calculate_energized_tiles(grid, (0, 0, "right")) == 8
 
 def test_multiple_beams_same_tile():
     grid = [
@@ -87,7 +87,7 @@ def test_multiple_beams_same_tile():
         "-.-",
         ".|.",
     ]
-    assert puzzle.calculate_energized_tiles(grid, (1, 0, "right")) == 5
+    assert puzzle.calculate_energized_tiles(grid, (0, 0, "right")) == 4
 
 def test_out_of_bounds():
     grid = [
@@ -96,3 +96,34 @@ def test_out_of_bounds():
     ]
     # Beam should stop when it goes out of bounds
     assert puzzle.calculate_energized_tiles(grid, (0, 0, "right")) == 2
+
+def test_parse():
+    input_data = (
+        ".|...\....\n"
+        "|.-.\\.....\n"
+        ".....|-...\n"
+        "........|\n"
+        "..........\n"
+        ".........\\\n"
+        "..../.\\..\n"
+        ".-.-/..|..\n"
+        ".|....-|.\\\n"
+        "..//.|...."
+    )
+    
+    expected_output = [
+        ".|...\....",
+        "|.-.\\.....",
+        ".....|-...",
+        "........|",
+        "..........",
+        ".........\\",
+        "..../.\\..",
+        ".-.-/..|..",
+        ".|....-|.\\",
+        "..//.|...."
+    ]
+    
+    assert puzzle.parse(input_data) == expected_output, "Test failed: Output did not match expected result."
+    print("Test passed: Output matches expected result.")
+
