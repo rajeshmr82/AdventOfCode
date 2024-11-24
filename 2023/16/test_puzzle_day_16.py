@@ -9,7 +9,7 @@ def test_solve_part_one(capsys):
     input = puzzle.read_input()
     answer = puzzle.solve_part_one(input)
     print(f'Part One : {answer}')
-    # assert 0 == answer
+    assert 6921 == answer
 
 def test_solve_part_two(capsys):
     print('Solving Part Two:')
