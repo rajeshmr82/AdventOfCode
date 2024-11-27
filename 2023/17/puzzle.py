@@ -67,13 +67,77 @@ def calculate_least_heat_loss(grid):
     
     return float('inf')  # If no path is found
 
-
-def solve_part_one(input):
-    result = None
-    return result
-
-
-def solve_part_two(input):      
+def minimal_heat_loss(start, end, least, most, grid):
+    queue = [(0, start[0], start[1], 0, 0)]  # (current_loss, x, y, previous x direction, previous y direction)
+    visited = set()
     
-    result = None
-    return result
+    while queue:
+        current_loss, x, y, prev_x, prev_y = heapq.heappop(queue)
+        
+        # If we reach the end, return the accumulated loss
+        if (x, y) == end:
+            return current_loss
+        
+        # Mark the current position as visited
+        if (x, y, prev_x, prev_y) in visited:
+            continue
+        visited.add((x, y, prev_x, prev_y))
+        
+        # Possible directions to move: right, down, left, up
+        directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+        
+        for dx, dy in directions:
+            # Skip the previous direction and its reverse
+            if (dx, dy) == (prev_x, prev_y) or (dx, dy) == (-prev_x, -prev_y):
+                continue
+            
+            # Initialize current position and heat loss
+            current_x, current_y, heat_loss = x, y, current_loss
+            
+            # Move in the chosen direction for 1 to 'most' steps
+            for step in range(1, most + 1):
+                current_x += dx
+                current_y += dy
+                
+                # Check if within bounds and valid cell
+                if (current_x, current_y) in grid:
+                    heat_loss += grid[current_x, current_y]
+                    
+                    # Only push to the queue if we have moved at least 'least' steps
+                    if step >= least:
+                        heapq.heappush(queue, (heat_loss, current_x, current_y, dx, dy))
+                else:
+                    break  # Stop if we go out of bounds or hit an invalid cell
+    
+    return float('inf')  # If no path is found
+
+def calculate_least_heat_loss_ultra(grid):
+    rows = len(grid)
+    cols = len(grid[0])
+    
+    # Create a board dictionary for easy access
+    grid = {(i, j): grid[i][j] for i in range(rows) for j in range(cols)}
+    
+    # Define start and end points
+    start = (0, 0)
+    end = (rows - 1, cols - 1)
+    
+    # Call the minimal_heat_loss function with the appropriate parameters
+    return minimal_heat_loss(start, end, least=4, most=10, grid=grid)
+
+def solve_part_one(input_data):
+    
+    # Parse the input data into a matrix
+    input_grid = parse(input_data)
+    
+    # Calculate the least heat loss using the calculate_least_heat_loss function
+    return calculate_least_heat_loss(input_grid)
+
+
+
+def solve_part_two(input_data):      
+    
+    # Parse the input data into a matrix
+    input_grid = parse(input_data)
+    
+    return calculate_least_heat_loss_ultra(input_grid)

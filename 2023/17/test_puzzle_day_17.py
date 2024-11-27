@@ -7,30 +7,17 @@ TEST_INPUT = """"""
 
 def test_solve_part_one(capsys):
     print('Solving Part One:')
-    
-    # Read the input data using the puzzle's read_input function
-    input_data = puzzle.read_input()
-    
-    # Parse the input data into a matrix
-    input_grid = puzzle.parse(input_data)
-    
-    # Calculate the least heat loss using the calculate_least_heat_loss function
-    answer = puzzle.calculate_least_heat_loss(input_grid)
-    
-    # Print the result
+    input = puzzle.read_input()
+    answer = puzzle.solve_part_one(input)
     print(f'Part One : {answer}')
-    
-    # You can assert the expected value if you know what it should be
-    # For example, if you expect the least heat loss to be 22 for the input grid:
-    expected_heat_loss = 668  # Adjust this based on your actual expected value
-    assert answer == expected_heat_loss, f'Expected {expected_heat_loss}, but got {answer}'
+    assert 668 == answer    
 
 def test_solve_part_two(capsys):
     print('Solving Part Two:')
     input = puzzle.read_input()
     answer = puzzle.solve_part_two(input)
     print(f'Part Two : {answer}')
-    # assert 0 == answer
+    answer = 788 
 
 def test_least_heat_loss_case_1():
     grid = [
@@ -214,3 +201,48 @@ def test_movement_constraint_with_turns():
     
     # Assert that the calculated answer matches the expected heat loss
     assert answer == expected_heat_loss, f'Expected {expected_heat_loss}, but got {answer}'
+
+
+def test_ultra_crucible_case_1():
+    grid = [
+        [1,1,1,1,1,1,1,1,1,1,1,1],
+        [9,9,9,9,9,9,9,9,9,9,9,1],
+        [9,9,9,9,9,9,9,9,9,9,9,1],
+        [9,9,9,9,9,9,9,9,9,9,9,1],
+        [9,9,9,9,9,9,9,9,9,9,9,1]
+    ]
+    
+    expected_heat_loss = 71  # Expected result based on the provided input
+    
+    # Calculate the least heat loss using the calculate_least_heat_loss_ultra function
+    answer = puzzle.calculate_least_heat_loss_ultra(grid)
+    
+    # Assert that the calculated answer matches the expected heat loss
+    assert answer == expected_heat_loss, f'Expected {expected_heat_loss}, but got {answer}'    
+
+def test_ultra_crucible_sample_input():
+    input_data = """\
+2413432311323
+3215453535623
+3255245654254
+3446585845452
+4546657867536
+1438598798454
+4457876987766
+3637877979653
+4654967986887
+4564679986453
+1224686865563
+2546548887735
+4322674655533
+"""
+    expected_heat_loss = 94  # Expected result based on the provided input
+    
+    # Parse the input data into a matrix
+    grid = puzzle.parse(input_data)
+    
+    # Calculate the least heat loss using the calculate_least_heat_loss_ultra function
+    answer =puzzle.calculate_least_heat_loss_ultra(grid)
+    
+    # Assert that the calculated answer matches the expected heat loss
+    assert answer == expected_heat_loss, f'Expected {expected_heat_loss}, but got {answer}'     
