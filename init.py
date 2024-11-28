@@ -10,7 +10,7 @@ USER_SESSION_ID = "53616c7465645f5fc099216234da2ae1a8b22c7644624478cf695d95ee885
 DOWNLOAD_STATEMENTS = False # Set to false to not download statements. Note that only part one is downloaded (since you need to complete it to access part two)
 DOWNLOAD_INPUTS = True     # Set to false to not download inputs. Note that if the USER_SESSION_ID is wrong or left empty, inputs will not be downloaded.
 MAKE_CODE_TEMPLATE = True  # Set to false to not make code templates. Note that even if OVERWRITE is set to True, it will never overwrite codes.
-MAKE_URL = True            # Set to false to not create a direct url link in the folder.
+MAKE_URL = False            # Set to false to not create a direct url link in the folder.
 author = "Rajesh M R"               # Name automatically put in the code templates.
 OVERWRITE = False          # If you really need to download the whole thing again, set this to true. As the creator said, AoC is fragile; please be gentle. Statements and Inputs do not change. This will not overwrite codes.
 
@@ -18,7 +18,7 @@ OVERWRITE = False          # If you really need to download the whole thing agai
 date = "December 2023"              # Date automatically put in the code templates.
 starting_advent_of_code_year = 2023 # You can go as early as 2015.
 last_advent_of_code_year = 2023     # The setup will download all advent of code data up until that date included
-last_advent_of_code_day = 18        # If the year isn't finished, the setup will download days up until that day included for the last year
+last_advent_of_code_day = 19        # If the year isn't finished, the setup will download days up until that day included for the last year
 # Imports
 import os
 from shutil import copy2
@@ -59,7 +59,7 @@ for y in years:
             template_path = os.path.join(year_pos, "template")
             # template_path = os.path.join(os.getcwd(), "template")  
             copy2(os.path.join(template_path, "puzzle.py"), os.path.join(day_pos, "puzzle.py"))
-            copy2(os.path.join(template_path, "test_puzzle_day_.py"), os.path.join(day_pos, "test_puzzle_day_"),os.path.join(day_pos,".py"))                
+            copy2(os.path.join(template_path, "test_puzzle_day_.py"), os.path.join(day_pos, f"test_puzzle_day_{d}.py"))                
         if DOWNLOAD_INPUTS and (not os.path.exists(day_pos+"/input.txt") or OVERWRITE)and USER_SESSION_ID != "":
             done = False
             error_count = 0
