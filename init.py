@@ -21,7 +21,6 @@ last_advent_of_code_year = 2023     # The setup will download all advent of code
 last_advent_of_code_day = 18        # If the year isn't finished, the setup will download days up until that day included for the last year
 # Imports
 import os
-import datetime
 from shutil import copy2
 import glob
 try:

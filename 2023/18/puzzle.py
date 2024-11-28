@@ -1,9 +1,3 @@
-import sys
-import re
-from functools import reduce
-import numpy as np
-import pandas as pd
-from itertools import combinations
 
 
 def read_input():
