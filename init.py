@@ -18,11 +18,12 @@ OVERWRITE = False          # If you really need to download the whole thing agai
 date = "December 2023"              # Date automatically put in the code templates.
 starting_advent_of_code_year = 2023 # You can go as early as 2015.
 last_advent_of_code_year = 2023     # The setup will download all advent of code data up until that date included
-last_advent_of_code_day = 17        # If the year isn't finished, the setup will download days up until that day included for the last year
+last_advent_of_code_day = 18        # If the year isn't finished, the setup will download days up until that day included for the last year
 # Imports
 import os
 import datetime
 from shutil import copy2
+import glob
 try:
     import requests
 except ImportError:
@@ -54,12 +55,12 @@ for y in years:
         #     code = open(day_pos+"/code.py", "w+")
         #     code.write("# Advent of code Year "+str(y)+" Day "+str(d)+" solution\n# Author = "+author+"\n# Date = "+date+"\n\nwith open((__file__.rstrip(\"code.py\")+\"input.txt\"), 'r') as input_file:\n    input = input_file.read()\n\n\n\nprint(\"Part One : \"+ str(None))\n\n\n\nprint(\"Part Two : \"+ str(None))")
         #     code.close()
-        if MAKE_CODE_TEMPLATE and not (os.path.exists(day_pos + "/puzzle.py") and os.path.exists(day_pos + "/test.py")):
-            # Copy puzzle.py and test.py from template folder
+        if MAKE_CODE_TEMPLATE and not (os.path.exists(day_pos + "/puzzle.py") and glob.glob(day_pos + "/test_puzzle_day_*.py")):
+            # Copy puzzle.py and test_puzzle_day_.py from template folder
             template_path = os.path.join(year_pos, "template")
             # template_path = os.path.join(os.getcwd(), "template")  
             copy2(os.path.join(template_path, "puzzle.py"), os.path.join(day_pos, "puzzle.py"))
-            copy2(os.path.join(template_path, "test_puzzle_day_.py"), os.path.join(day_pos, "test_puzzle_day_.py"))                
+            copy2(os.path.join(template_path, "test_puzzle_day_.py"), os.path.join(day_pos, "test_puzzle_day_"),os.path.join(day_pos,".py"))                
         if DOWNLOAD_INPUTS and (not os.path.exists(day_pos+"/input.txt") or OVERWRITE)and USER_SESSION_ID != "":
             done = False
             error_count = 0
