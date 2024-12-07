@@ -1,9 +1,13 @@
 from collections import deque
-import re
+import ast
 
 def read_input():
-    with open((__file__.rstrip("puzzle.py")+"input.txt"), 'r') as input_file:
-        return input_file.read()
+    try:
+        with open((__file__.rstrip("puzzle.py")+"input.txt"), 'r') as input_file:
+            return input_file.read()
+    except FileNotFoundError:
+        print("Input file not found.")
+        return ""
 
 class Pipeline:
     def __init__(self):
@@ -29,14 +33,7 @@ class Pipeline:
 
                 # Evaluate the condition if it exists
                 if condition:
-                    # Replace the variable names with the part's values
-                    condition = condition.replace('x', str(part['x'])) \
-                                         .replace('m', str(part['m'])) \
-                                         .replace('a', str(part['a'])) \
-                                         .replace('s', str(part['s']))
-
-                    # Evaluate the condition
-                    if eval(condition):  # This is safe here since we control the input
+                    if evaluate_condition(condition, part):  # Use the custom evaluation function
                         # If the destination is a workflow, enqueue that workflow
                         if destination.strip() in self.workflows:
                             queue.append(destination.strip())
@@ -174,22 +171,13 @@ def calc_arrangements(ranges):
     return result
 
 def parse_condition(condition_str):
-    # Check if the condition is a workflow name (no operator)
     if ':' not in condition_str:
-        return create_condition("", "", 0, condition_str)  # Handle as a workflow name
+        return create_condition("", "", 0, condition_str)
 
-    # Split the condition into variable, operator, and the rest
     condition_part, destiny = condition_str.split(':', 1)
-
-    # Extract variable name and operator
-    varname = condition_part[0]  # First character
-    operator = condition_part[1] if len(condition_part) > 1 else ""  # Second character
-
-    # Check if we have a valid operator and operand
-    if operator in ("<", ">") and len(condition_part) > 2:
-        operand = int(condition_part[2:])  # The rest is the operand
-    else:
-        operand = 0  # Default value or handle as needed
+    varname = condition_part[0]
+    operator = condition_part[1] if len(condition_part) > 1 else ""
+    operand = int(condition_part[2:]) if operator in ("<", ">") and len(condition_part) > 2 else 0
 
     return create_condition(varname, operator, operand, destiny)
 
@@ -211,5 +199,13 @@ def translate_workflows(original_workflows):
         translated_workflows[wf_name] = translated_conditions
 
     return translated_workflows
+
+def evaluate_condition(condition, part):
+    # Replace variable names with their values
+    for var in ['x', 'm', 'a', 's']:
+        condition = condition.replace(var, str(part[var]))
+
+    # Evaluate the condition safely
+    return eval(condition)  # Use eval here since we control the input format
 
 
