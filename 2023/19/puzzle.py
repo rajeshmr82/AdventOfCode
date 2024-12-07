@@ -1,9 +1,5 @@
-import sys
-import re
-from functools import reduce
-import numpy as np
-import pandas as pd
 from collections import deque
+import re
 
 def read_input():
     with open((__file__.rstrip("puzzle.py")+"input.txt"), 'r') as input_file:
@@ -103,5 +99,117 @@ def solve_part_one(input):
     return calculate_sum(pipeline, parts)
 
 def solve_part_two(input):      
-    result = None
+    pipeline, parts = parse(input)
+    workflows = pipeline.workflows
+    translated_workflows = translate_workflows(workflows)
+    return count_accepted_combinations(translated_workflows)
+
+def count_accepted_combinations(workflows):
+    # Initialize splits for each variable
+    splits = {
+        'x': {'low': 1, 'high': 4000},
+        'm': {'low': 1, 'high': 4000},
+        'a': {'low': 1, 'high': 4000},
+        's': {'low': 1, 'high': 4000}
+    }
+    total = 0
+
+    def process_workflow(wf_name, current_ranges):
+        nonlocal total
+        conditions = workflows[wf_name]
+
+        for condition in conditions:
+            # Process the condition
+            varname = condition['varname']
+            operator = condition['operator']
+            operand = condition['operand']
+            destiny = condition['destiny']
+
+            # Clone the current ranges for modification
+            new_ranges = clone_ranges(current_ranges)
+
+            print(f"wf_name: {wf_name} - new_ranges :{new_ranges}")
+
+            # Update the ranges based on the condition
+            if varname == 'x':
+                update_ranges(operator, operand, current_ranges['x'], new_ranges['x'])
+            elif varname == 'm':
+                update_ranges(operator, operand, current_ranges['m'], new_ranges['m'])
+            elif varname == 'a':
+                update_ranges(operator, operand, current_ranges['a'], new_ranges['a'])
+            elif varname == 's':
+                update_ranges(operator, operand, current_ranges['s'], new_ranges['s'])
+
+            # Check the destiny
+            if destiny == 'R':
+                continue  # Reject this path
+            elif destiny == 'A':
+                total += calc_arrangements(new_ranges)
+            else:
+                # Recur into the next workflow
+                process_workflow(destiny, new_ranges)
+
+    # Start processing from the 'in' workflow
+    process_workflow('in', splits)
+
+    return total
+
+def clone_ranges(source):
+    return {key: {'low': value['low'], 'high': value['high']} for key, value in source.items()}
+
+def update_ranges(operator, operand, current_range, new_range):
+    if operator == "<":
+        new_range['high'] = operand - 1  # Set the new high value to one less than the operand
+        current_range['low'] = operand  # Set the current low value to the operand
+    elif operator == ">":
+        new_range['low'] = operand + 1  # Set the new low value to one more than the operand
+        current_range['high'] = operand  # Set the current high value to the operand
+
+def calc_arrangements(ranges):
+    result = 1
+    result *= ranges['x']['high'] - ranges['x']['low'] + 1
+    result *= ranges['m']['high'] - ranges['m']['low'] + 1
+    result *= ranges['a']['high'] - ranges['a']['low'] + 1
+    result *= ranges['s']['high'] - ranges['s']['low'] + 1
     return result
+
+def parse_condition(condition_str):
+    # Check if the condition is a workflow name (no operator)
+    if ':' not in condition_str:
+        return create_condition("", "", 0, condition_str)  # Handle as a workflow name
+
+    # Split the condition into variable, operator, and the rest
+    condition_part, destiny = condition_str.split(':', 1)
+
+    # Extract variable name and operator
+    varname = condition_part[0]  # First character
+    operator = condition_part[1] if len(condition_part) > 1 else ""  # Second character
+
+    # Check if we have a valid operator and operand
+    if operator in ("<", ">") and len(condition_part) > 2:
+        operand = int(condition_part[2:])  # The rest is the operand
+    else:
+        operand = 0  # Default value or handle as needed
+
+    return create_condition(varname, operator, operand, destiny)
+
+def create_condition(varname, operator, operand, destiny):
+    return {
+        "varname": varname,
+        "operator": operator,
+        "operand": operand,
+        "destiny": destiny
+    }
+
+def translate_workflows(original_workflows):
+    translated_workflows = {}
+
+    for wf_name, conditions in original_workflows.items():
+        translated_conditions = []
+        for raw_condition in conditions:
+            translated_conditions.append(parse_condition(raw_condition))
+        translated_workflows[wf_name] = translated_conditions
+
+    return translated_workflows
+
+

@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from puzzle import Puzzle, parse, calculate_reflection_sum, solvePartOne, solvePartTwo, readInput, VERTICAL, HORIZONTAL
+import puzzle
 
 @pytest.fixture
 def sample_patterns():
@@ -43,24 +43,24 @@ class TestPuzzleParsing:
             ['#', '.', '#', '.', '#', '#', '.', '#', '.']
         ])
         
-        result = parse(input_str.strip())
+        result = puzzle.parse(input_str.strip())
         pytest.assume(len(result) == 1)
         pytest.assume(np.array_equal(result[0].data, expected))
 
     def test_parse_multiple_patterns(self, sample_patterns):
-        result = parse(sample_patterns.strip())
+        result = puzzle.parse(sample_patterns.strip())
         pytest.assume(len(result) == 2)
 
     def test_parse_empty_input(self):
         input_str = ""
-        result = parse(input_str)
+        result = puzzle.parse(input_str)
         pytest.assume(len(result) == 0)
 
     def test_parse_single_line_pattern(self):
         input_str = "#.##..##."
         expected = np.array([['#', '.', '#', '#', '.', '.', '#', '#', '.']])
         
-        result = parse(input_str)
+        result = puzzle.parse(input_str)
         pytest.assume(len(result) == 1)
         pytest.assume(np.array_equal(result[0].data, expected))
 
@@ -74,7 +74,7 @@ class TestReflections:
 ..#.##.#.
 ..##..##.
 #.#.##.#.
-""", (VERTICAL, 5)),
+""", (puzzle.VERTICAL, 5)),
         ("""
 #...##..#
 #....#..#
@@ -83,10 +83,10 @@ class TestReflections:
 #####.##.
 ..##..###
 #....#..#
-""", (HORIZONTAL, 4)),
+""", (puzzle.HORIZONTAL, 4)),
     ])
     def test_find_reflection(self, input_str, expected_reflection):
-        puzzle = Puzzle.from_string(input_str.strip())
+        puzzle = puzzle.Puzzle.from_string(input_str.strip())
         result = puzzle.find_reflections()
         pytest.assume(expected_reflection in result)
 
@@ -100,7 +100,7 @@ class TestReflections:
 ..##..##.
 #....#..#
 """
-        puzzle = Puzzle.from_string(input_str.strip())
+        puzzle = puzzle.Puzzle.from_string(input_str.strip())
         result = puzzle.find_reflections()
         pytest.assume(len(result) == 0)
 
@@ -115,9 +115,9 @@ class TestSmudgedReflections:
 ..##..##.
 #.#.##.#.
 """
-        puzzle = Puzzle.from_string(input_str.strip())
-        result = puzzle.find_smudged_reflection()
-        pytest.assume(result == (HORIZONTAL, 3))
+        puzzle = puzzle.Puzzle.from_string(input_str.strip())
+        result = puzzle.puzzle.find_smudged_reflection()
+        pytest.assume(result == (puzzle.HORIZONTAL, 3))
 
     def test_find_smudged_reflection_vertical(self):
         input_str = """
@@ -129,9 +129,9 @@ class TestSmudgedReflections:
 ..##..###
 #....#..#
 """
-        puzzle = Puzzle.from_string(input_str.strip())
+        puzzle = puzzle.Puzzle.from_string(input_str.strip())
         result = puzzle.find_smudged_reflection()
-        pytest.assume(result == (HORIZONTAL, 1))
+        pytest.assume(result == (puzzle.HORIZONTAL, 1))
 
     @pytest.mark.parametrize("input_str, expected_reflection", [
         ("""
@@ -140,29 +140,29 @@ class TestSmudgedReflections:
 ##.##
 ##.##
 #..##
-""", (HORIZONTAL, 3)),
+""", (puzzle.HORIZONTAL, 3)),
         ("""
 #####
 .....
 ..#..
 #####
 #####
-""", (HORIZONTAL, 2)),
+""", (puzzle.HORIZONTAL, 2)),
     ])
     def test_find_smudged_reflection_edge_cases(self, input_str, expected_reflection):
-        puzzle = Puzzle.from_string(input_str.strip())
+        puzzle = puzzle.Puzzle.from_string(input_str.strip())
         result = puzzle.find_smudged_reflection()
         pytest.assume(result == expected_reflection, f"Expected {expected_reflection}, but got {result}")
 
 class TestReflectionSum:
     def test_calculate_reflection_sum(self, sample_patterns):
-        puzzles = parse(sample_patterns.strip())
-        result = calculate_reflection_sum(puzzles)
+        puzzles = puzzle.parse(sample_patterns.strip())
+        result = puzzle.calculate_reflection_sum(puzzles)
         pytest.assume(result == 405)
 
     def test_calculate_reflection_sum_with_smudge(self, sample_patterns):
-        puzzles = parse(sample_patterns.strip())
-        result = calculate_reflection_sum(puzzles, use_smudge=True)
+        puzzles = puzzle.parse(sample_patterns.strip())
+        result = puzzle.calculate_reflection_sum(puzzles, use_smudge=True)
         pytest.assume(result == 400)
 
     def test_calculate_reflection_sum_complex(self):
@@ -199,18 +199,18 @@ class TestReflectionSum:
 #..#....#
 #...##...
 """
-        puzzles = parse(input_str.strip())
-        result = calculate_reflection_sum(puzzles)
+        puzzles = puzzle.parse(input_str.strip())
+        result = puzzle.calculate_reflection_sum(puzzles)
         pytest.assume(result == 709)
 
-        result_with_smudge = calculate_reflection_sum(puzzles, use_smudge=True)
+        result_with_smudge = puzzle.calculate_reflection_sum(puzzles, use_smudge=True)
         pytest.assume(result_with_smudge == 800)
 
 class TestSolutions:
     def test_solvePartOne(self):
-        result = solvePartOne(readInput())
+        result = puzzle.solvePartOne(puzzle.readInput())
         pytest.assume(result == 27300)
 
     def test_solvePartTwo(self):
-        result = solvePartTwo(readInput())
+        result = puzzle.solvePartTwo(puzzle.readInput())
         pytest.assume(result == 29276)

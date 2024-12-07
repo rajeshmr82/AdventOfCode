@@ -43,4 +43,92 @@ def test_solve_part_two(capsys):
     input = puzzle.read_input()
     answer = puzzle.solve_part_two(input)
     print(f'Part Two : {answer}')
-    # assert 0 == answer
+    assert 128163929109524 == answer
+
+
+def compare_workflows(workflow1, workflow2):
+    # Convert each list of dictionaries to a set of frozen sets
+    set1 = {frozenset(d.items()) for d in workflow1}
+    set2 = {frozenset(d.items()) for d in workflow2}
+    return set1 == set2
+
+def test_translate_valid_workflows():
+    original_workflows = {
+        'px': ['a<2006:qkq', 'm>2090:A', 'rfg'],
+        'pv': ['a>1716:R', 'A'],
+        'lnx': ['m>1548:A', 'A'],
+    }
+
+    expected_output = {
+        'px': [
+            {'varname': 'a', 'operator': '<', 'operand': 2006, 'destiny': 'qkq'},
+            {'varname': 'm', 'operator': '>', 'operand': 2090, 'destiny': 'A'},
+            {'varname': '', 'operator': '', 'operand': 0, 'destiny': 'rfg'}
+        ],
+        'pv': [
+            {'varname': 'a', 'operator': '>', 'operand': 1716, 'destiny': 'R'},
+            {'varname': '', 'operator': '', 'operand': 0, 'destiny': 'A'}
+        ],
+        'lnx': [
+            {'varname': 'm', 'operator': '>', 'operand': 1548, 'destiny': 'A'},
+            {'varname': '', 'operator': '', 'operand': 0, 'destiny': 'A'}
+        ],
+    }
+
+    translated_workflows = puzzle.translate_workflows(original_workflows)
+
+    # Compare without considering order
+    for wf_name, expected_conditions in expected_output.items():
+        assert compare_workflows(translated_workflows[wf_name], expected_conditions)
+
+def test_translate_workflow_with_no_conditions():
+    original_workflows = {
+        'empty': []
+    }
+
+    expected_output = {
+        'empty': []
+    }
+
+    translated_workflows = puzzle.translate_workflows(original_workflows)
+    assert compare_workflows(translated_workflows['empty'], expected_output['empty'])
+
+
+def test_translate_workflow_with_mixed_conditions():
+    original_workflows = {
+        'mixed': ['a<1000:next', 'b>2000:R', 'next']
+    }
+
+    expected_output = {
+        'mixed': [
+            {'varname': 'a', 'operator': '<', 'operand': 1000, 'destiny': 'next'},
+            {'varname': 'b', 'operator': '>', 'operand': 2000, 'destiny': 'R'},
+            {'varname': '', 'operator': '', 'operand': 0, 'destiny': 'next'}
+        ]
+    }
+
+    translated_workflows = puzzle.translate_workflows(original_workflows)
+    assert compare_workflows(translated_workflows['mixed'], expected_output['mixed'])
+
+def test_translate_workflow_with_workflow_name():
+    original_workflows = {
+        'workflow_name': ['rfg']  # Just a workflow name
+    }
+
+    expected_output = {
+        'workflow_name': [
+            {'varname': '', 'operator': '', 'operand': 0, 'destiny': 'rfg'}
+        ]
+    }
+
+    translated_workflows = puzzle.translate_workflows(original_workflows)
+    assert compare_workflows(translated_workflows['workflow_name'], expected_output['workflow_name'])
+
+
+def test_count_accepted_combinations():
+    pipeline, parts = puzzle.parse(TEST_INPUT)
+    workflows = pipeline.workflows
+    translated_workflows = puzzle.translate_workflows(workflows)
+    accepted_count = puzzle.count_accepted_combinations(translated_workflows)
+
+    assert accepted_count == 167409079868000, f"Expected 167409079868000 but got {accepted_count}"
