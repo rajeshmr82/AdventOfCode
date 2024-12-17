@@ -13,7 +13,7 @@ def read_input():
         return ""
 
 def parse_input(config):
-    flops = {}
+    flops = set()  # Use a set for faster lookups
     conjs = {}
     graph = {}
     lines = config.strip().splitlines()
@@ -36,13 +36,13 @@ def parse_input(config):
             
             # Handle flip-flops and conjunctions
             if module_type == '%':
-                flops[node] = False
+                flops.add(node)  # Store flip-flop in a set
             elif module_type == '&':
                 conjs[node] = {}
             
             graph[node] = (module_type, destinations)
     
-    return graph
+    return graph, flops  # Return both the graph and the set of flip-flops
 
 def process_node(node,module_type, pulse, memory, graph, destinations, src, todo):  # Get the module type and destinations
 
@@ -105,7 +105,7 @@ def push_button_n_times(graph, memory, n, initial_pulse=False):
 def solve_part_one(input_data):
 
     # Use the parse_input function to convert the text into a graph structure
-    graph = parse_input(input_data)
+    graph, flops = parse_input(input_data)
 
     memory = Memory()
     memory.initialize(graph)  # Initialize memory based on the graph
@@ -148,7 +148,7 @@ def fewest_button_presses_to_rx(graph, memory):
     # Calculate and return the least common multiple of the integers
     return math.lcm(*res) if res else None  # Return None if res is empty
 
-def get_binary_string_for_connected_node(graph, connected):
+def get_binary_string_for_connected_node(graph, connected, flip_flops):
     binary_string = ''
     while True:
         module_type, destinations = graph.get(connected, (None, []))
@@ -158,26 +158,58 @@ def get_binary_string_for_connected_node(graph, connected):
             break
         
         # Construct the binary string based on the conditions
-        binary_string = ('1' if len(destinations) == 2 or graph.get(destinations[0], (None, []))[0] != '%' else '0') + binary_string
+        binary_string = ('1' if len(destinations) == 2 or destinations[0] not in flip_flops else '0') + binary_string
         
-        # Find all flip-flops in the destinations
-        flip_flops = [dest for dest in destinations if graph.get(dest, (None, []))[0] == '%']
-        if not flip_flops:
+        # Find all flip-flops in the destinations using the precomputed set
+        flip_flops_in_destinations = [dest for dest in destinations if dest in flip_flops]
+        if not flip_flops_in_destinations:
             break
         
-        connected = flip_flops[0]  # Move to the first flip-flop
+        connected = next((dest for dest in flip_flops_in_destinations), None)  # Get the first flip-flop or None
     
     return int(binary_string, 2)  # Convert binary string to integer
 
 def solve_part_two(input_data):
-    graph = parse_input(input_data)
+    graph,flip_flops = parse_input(input_data)
     results = []
     _, broadcaster_destinations = graph.get('broadcaster', (None, []))
     
     for connected in broadcaster_destinations:
-        binary_value = get_binary_string_for_connected_node(graph, connected)
+        binary_value = get_binary_string_for_connected_node(graph, connected, flip_flops)
         results.append(binary_value)
     
     presses_needed = math.lcm(*results) if results else None
 
     return presses_needed 
+
+def process_flip_flops(graph, flip_flops):
+    results = []
+    
+    for flip_flop in flip_flops:
+        state = 0  # Initialize an integer to represent the state
+        connected = flip_flop
+        
+        while True:
+            module_type, destinations = graph.get(connected, (None, []))
+            
+            # Early exit if there are no destinations
+            if not destinations:
+                break
+            
+            # Update the state based on the conditions
+            if len(destinations) == 2 or destinations[0] not in flip_flops:
+                state |= 1
+            else:
+                state &= ~1
+            
+            # Find all flip-flops in the destinations
+            flip_flops_in_destinations = [dest for dest in destinations if dest in flip_flops]
+            
+            # get the next flip-flop or None
+            connected = next((dest for dest in flip_flops_in_destinations), None)
+            if connected is None:
+                break  # Exit the loop if there are no flip-flops
+        
+        results.append(state)  # Append the final state as an integer
+    
+    return results 

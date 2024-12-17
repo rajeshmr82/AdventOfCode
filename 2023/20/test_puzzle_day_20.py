@@ -10,7 +10,7 @@ def test_parse_input():
     %c -> inv
     &inv -> a
     """
-    modules = puzzle.parse_input(config)
+    modules, flip_flops = puzzle.parse_input(config)
 
     # Check that the modules are parsed correctly
     assert 'broadcaster' in modules
@@ -147,7 +147,7 @@ def test_broadcaster_flip_flop_inverter_sequence():
     """
 
     # Use the parse_input function to convert the text into a graph structure
-    graph = puzzle.parse_input(config)
+    graph,_ = puzzle.parse_input(config)
 
     memory = Memory()
     memory.initialize(graph)  # Initialize memory based on the graph
@@ -176,7 +176,7 @@ def test_broadcaster_flip_flop_simple_conjunction():
     """
 
     # Use the parse_input function to convert the text into a graph structure
-    graph = puzzle.parse_input(config)
+    graph,_ = puzzle.parse_input(config)
 
     memory = Memory()
     memory.initialize(graph)  # Initialize memory based on the graph
@@ -252,7 +252,7 @@ def test_broadcaster_flip_flop_inverter_large_sequence(config, expected_low, exp
     # """
 
     # Use the parse_input function to convert the text into a graph structure
-    graph = puzzle.parse_input(config)
+    graph,_ = puzzle.parse_input(config)
 
     memory = Memory()
     memory.initialize(graph)  # Initialize memory based on the graph
@@ -280,4 +280,3 @@ def test_solve_part_two(capsys):
     answer = puzzle.solve_part_two(input)
     print(f'Part Two : {answer}')
     assert 240853834793347 == answer
-
