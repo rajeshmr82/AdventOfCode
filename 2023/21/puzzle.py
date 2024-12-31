@@ -29,7 +29,8 @@ def neighbors(position, grid):
     return valid_neighbors
 
 
-def count_reachable_positions(grid, start_position, total_steps):
+@lru_cache(maxsize=None)
+def count_reachable_positions(grid, start_position, total_steps, even_steps_only=False):
     """Perform BFS to find all reachable positions after a given number of steps."""
     queue = deque([start_position])
     reachable_positions = set()
@@ -41,8 +42,8 @@ def count_reachable_positions(grid, start_position, total_steps):
             current_row, current_col = queue.popleft()
             visited.add((current_row, current_col))
 
-            # Add to reachable positions if the step count is even
-            if t % 2 == 0:
+            # Add to reachable positions if the step count is even (if specified)
+            if not even_steps_only or t % 2 == 0:
                 reachable_positions.add((current_row, current_col))
 
             # Explore the four possible directions
@@ -53,7 +54,7 @@ def count_reachable_positions(grid, start_position, total_steps):
 
         queue.extend(visit_next)
 
-    return len(reachable_positions)
+    return reachable_positions  # Return the set of reachable positions
 
 
 def solve_part_one(input):
@@ -83,6 +84,10 @@ def solve_two(grid, n_steps=None):
         visited = set()
         reachable = set()
         odd = n_steps & 1
+
+        # Use count_reachable_positions to get reachable positions
+        reachable_positions = count_reachable_positions(grid_tuple, start_pos, n_steps, even_steps_only=False)
+
         for t in range(n_steps + 1):
             visit_next = set()
             while visit:
@@ -96,7 +101,8 @@ def solve_two(grid, n_steps=None):
                         if (i_next, j_next) not in visited:
                             visit_next.add((i_next, j_next))
             visit = visit_next
-        return frozenset(reachable)
+
+        return frozenset(reachable)  # Return the frozenset of reachable positions
 
     def process_steps(n_steps):
         def verify_diamond_pattern():
