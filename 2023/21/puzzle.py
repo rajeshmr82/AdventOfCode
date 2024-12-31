@@ -29,8 +29,7 @@ def neighbors(position, grid):
     return valid_neighbors
 
 
-@lru_cache(maxsize=None)
-def count_reachable_positions(grid, start_position, total_steps, even_steps_only=False):
+def count_reachable_positions(grid, start_position, total_steps):
     """Perform BFS to find all reachable positions after a given number of steps."""
     queue = deque([start_position])
     reachable_positions = set()
@@ -42,8 +41,8 @@ def count_reachable_positions(grid, start_position, total_steps, even_steps_only
             current_row, current_col = queue.popleft()
             visited.add((current_row, current_col))
 
-            # Add to reachable positions if the step count is even (if specified)
-            if not even_steps_only or t % 2 == 0:
+            # Add to reachable positions if the step count is even
+            if t % 2 == 0:
                 reachable_positions.add((current_row, current_col))
 
             # Explore the four possible directions
@@ -54,7 +53,7 @@ def count_reachable_positions(grid, start_position, total_steps, even_steps_only
 
         queue.extend(visit_next)
 
-    return reachable_positions  # Return the set of reachable positions
+    return len(reachable_positions)
 
 
 def solve_part_one(input):
@@ -73,6 +72,8 @@ def find_start_position(garden_map):
 
 
 def solve_two(grid, n_steps=None):
+    if n_steps is None:
+        n_steps = 26501365
 
     shape = (len(grid), len(grid[0]))
     start = find_start_position(grid)
@@ -85,8 +86,6 @@ def solve_two(grid, n_steps=None):
         reachable = set()
         odd = n_steps & 1
 
-        # Use count_reachable_positions to get reachable positions
-        reachable_positions = count_reachable_positions(grid_tuple, start_pos, n_steps, even_steps_only=False)
 
         for t in range(n_steps + 1):
             visit_next = set()
@@ -102,7 +101,7 @@ def solve_two(grid, n_steps=None):
                             visit_next.add((i_next, j_next))
             visit = visit_next
 
-        return frozenset(reachable)  # Return the frozenset of reachable positions
+        return frozenset(reachable)
 
     def process_steps(n_steps):
         def verify_diamond_pattern():
@@ -120,23 +119,9 @@ def solve_two(grid, n_steps=None):
                    shape[0] & 1 and 
                    (n_steps - shape[0] // 2) % shape[0] == 0 and 
                    verify_diamond_pattern())
-        return calculate_infinite_grid(n_steps, start) if special else len(calculate_reachable_plots(n_steps, start))
-
-    def calculate_infinite_grid(n_steps, start):
-        def poly_lagrange(p):
-            a = (
-                fractions.Fraction(
-                    math.prod(p - xj for xj in x if xj != xi),
-                    math.prod(xi - xj for xj in x if xj != xi),
-                )
-                for xi in x
-            )
-            return sum(ai * yi for ai, yi in zip(a, y))
         
-        order = 2
-        x = [i * shape[0] // 2 for i in range(1, 2 * (order + 1), 2)]
-        y = [len(calculate_reachable_plots(xi, start)) for xi in x]        
-        return poly_lagrange(n_steps)  
+        # Return the count of reachable plots based on the special condition
+        return len(calculate_reachable_plots(n_steps, start)) if not special else "Special case handling needed"
 
     return process_steps(n_steps)
 
