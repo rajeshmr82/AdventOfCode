@@ -86,6 +86,7 @@ def solve_two(grid, n_steps=None):
         reachable = set()
         odd = n_steps & 1
 
+        reachable_positions = count_reachable_positions(grid_tuple, start_pos, n_steps)
 
         for t in range(n_steps + 1):
             visit_next = set()
@@ -103,25 +104,27 @@ def solve_two(grid, n_steps=None):
 
         return frozenset(reachable)
 
-    def process_steps(n_steps):
-        def verify_diamond_pattern():
-            reachable = calculate_reachable_plots(shape[0] // 2, start)
-            i, j = 0, shape[0] // 2
-            for di, dj in [(+1, +1), (+1, -1), (-1, -1), (-1, +1)]:
-                for _ in range(shape[0] // 2):
-                    i += di
-                    j += dj
-                    if (i, j) not in reachable:
-                        return False
-            return True
+    def verify_diamond_pattern():
+        reachable = calculate_reachable_plots(shape[0] // 2, start)
+        i, j = 0, shape[0] // 2
+        for di, dj in [(+1, +1), (+1, -1), (-1, -1), (-1, +1)]:
+            for _ in range(shape[0] // 2):
+                i += di
+                j += dj
+                if (i, j) not in reachable:
+                    return False
+        return True
 
-        special = (shape[0] == shape[1] and 
-                   shape[0] & 1 and 
-                   (n_steps - shape[0] // 2) % shape[0] == 0 and 
-                   verify_diamond_pattern())
-        
-        # Return the count of reachable plots based on the special condition
-        return len(calculate_reachable_plots(n_steps, start)) if not special else "Special case handling needed"
+    def is_special_case(n_steps):
+        return (shape[0] == shape[1] and 
+                shape[0] & 1 and 
+                (n_steps - shape[0] // 2) % shape[0] == 0 and 
+                verify_diamond_pattern())
+
+    def process_steps(n_steps):
+        if is_special_case(n_steps):
+            return "Special case handling needed"
+        return len(calculate_reachable_plots(n_steps, start))
 
     return process_steps(n_steps)
 
