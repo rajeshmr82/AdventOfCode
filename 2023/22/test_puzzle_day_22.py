@@ -112,4 +112,4 @@ def test_solve_part_two(capsys):
     input = puzzle.read_input()
     answer = puzzle.solve_part_two(input)
     print(f"Part Two : {answer}")
-    assert 0 == answer
+    assert 86556 == answer
