@@ -16,6 +16,13 @@ class TileType(Enum):
     SLOPE_LEFT = "<"
 
 
+class Direction(Enum):
+    UP = (0, -1)
+    RIGHT = (1, 0)
+    DOWN = (0, 1)
+    LEFT = (-1, 0)
+
+
 class HikingTrail:
     def __init__(
         self, grid: List[List[str]], start: Tuple[int, int], end: Tuple[int, int]
@@ -96,38 +103,26 @@ class HikingTrail:
         without revisiting any tiles and following slope rules.
         Returns -1 if no valid path exists.
         """
-        stack = [(self.start, set([self.start]), [])]  # Stack of (current position, visited set, path)
-        max_length = 0
-        best_path = []  # Track the best path found
+        exploration_stack = [(self.start, 0, frozenset([self.start]))]  # (current node, current path length, visited set)
+        max_length = float('-inf')  # Track the maximum path length found
 
-        while stack:
-            pos, visited, path = stack.pop()
-            current_length = len(visited)
+        while exploration_stack:
+            current, path_length, visited = exploration_stack.pop()
 
-            if pos == self.end:
-                if current_length > max_length:
-                    max_length = current_length
-                    best_path = path + [pos]
-                continue
+            # Update max_length if we reach the end
+            if current == self.end:
+                max_length = max(max_length, path_length)
 
-            # Add current position to the path
-            path.append(pos)
+            self.add_neighbors_to_stack(current, path_length, visited, exploration_stack)
 
-            for next_pos in self.get_valid_neighbors(pos, visited, ignore_slopes):
-                # Create a new visited set for the next position
-                new_visited = visited.copy()
-                new_visited.add(next_pos)
-                stack.append((next_pos, new_visited, path.copy()))
+        return max_length if max_length != float('-inf') else -1
 
-            # Remove the current position from the path
-            path.pop()
-
-        # Print the best path followed
-        self.print_path(best_path)
-
-        # max_length = max(max_length, len(visited))
-
-        return max_length - 1
+    def add_neighbors_to_stack(self, current: Node, path_length: int, visited: frozenset, stack: list):
+        """Add valid neighbors to the exploration stack."""
+        for next_node, distance in sorted(self.connections[current].items()):
+            if next_node not in visited:
+                new_visited = visited | frozenset([next_node])  # Create a new frozenset for visited
+                stack.append((next_node, path_length + distance, new_visited))
 
     def print_path(self, best_path: List[Tuple[int, int]]):
         """Print the grid with the path followed."""
@@ -230,10 +225,10 @@ class CollapsedGraph:
         max_length = float('-inf')
         
         while stack:
-            current, length, visited = stack.pop()
+            current, path_length, visited = stack.pop()
             
             if current == self.end:
-                max_length = max(max_length, length)
+                max_length = max(max_length, path_length)
                 continue
             
             # Add all unvisited neighbors to the stack
@@ -247,7 +242,7 @@ class CollapsedGraph:
             
             for next_node, weight in neighbors:
                 new_visited = frozenset([*visited, next_node])
-                stack.append((next_node, length + weight, new_visited))
+                stack.append((next_node, path_length + weight, new_visited))
         
         return max_length if max_length != float('-inf') else -1
 
