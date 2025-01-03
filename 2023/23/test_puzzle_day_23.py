@@ -51,6 +51,51 @@ def test_multiple_start_positions():
     with pytest.raises(ValueError, match="Multiple or no start positions found"):
         puzzle.parse_hiking_trail(input_str)
 
+
+def test_simple_path():
+    input_str = """
+#.###
+#...#
+###.#
+""".strip()
+    trail = puzzle.parse_hiking_trail(input_str)
+    assert trail.find_longest_path() == 4  # Path: (0,1) -> (1,1) -> (1,2) -> (2,3)
+
+def test_path_with_slopes():
+    input_str = """
+#.###
+#v..#
+###.#
+""".strip()
+    trail = puzzle.parse_hiking_trail(input_str)
+    assert trail.find_longest_path() == -1  # Only one valid path due to slope
+
+def test_no_valid_path():
+    input_str = """
+#.###
+#^..#
+###.#
+""".strip()
+    trail = puzzle.parse_hiking_trail(input_str)
+    assert trail.find_longest_path() == -1  # No valid path due to upward slope
+
+def test_path_with_multiple_slopes():
+    input_str = """
+#.####
+#v...#
+#>v..#
+####.#
+""".strip()
+    trail = puzzle.parse_hiking_trail(input_str)
+    assert trail.find_longest_path() == 3  # Must follow slopes
+
+def test_solve_part_one(capsys):
+    print('Solving Part One:')
+    input = puzzle.read_input()
+    answer = puzzle.solve_part_one(input)
+    print(f'Part One : {answer}')
+    assert 2250 == answer
+
 def test_example_from_problem():
     input_str = """
 #.#####################
@@ -85,53 +130,39 @@ def test_example_from_problem():
     # The example has a path of length 94 (including end tile, excluding start tile)
     assert trail.find_longest_path() == 94
 
-def test_simple_path():
+def test_example_from_problem_without_slopes():
     input_str = """
-#.###
-#...#
-###.#
+#.#####################
+#.......#########...###
+#######.#########.#.###
+###.....#.>.>.###.#.###
+###v#####.#v#.###.#.###
+###.>...#.#.#.....#...#
+###v###.#.#.#########.#
+###...#.#.#.......#...#
+#####.#.#.#######.#.###
+#.....#.#.#.......#...#
+#.#####.#.#.#########v#
+#.#...#...#...###...>.#
+#.#.#v#######v###.###v#
+#...#.>.#...>.>.#.###.#
+#####v#.#.###v#.#.###.#
+#.....#...#...#.#.#...#
+#.#########.###.#.#.###
+#...###...#...#...#.###
+###.###.#.###v#####v###
+#...#...#.#.>.>.#.>.###
+#.###.###.#.###.#.#v###
+#.....###...###...#...#
+#####################.#
 """.strip()
-    trail = puzzle.parse_hiking_trail(input_str)
-    assert trail.find_longest_path() == 4  # Path: (0,1) -> (1,1) -> (1,2) -> (2,3)
-
-def test_path_with_slopes():
-    input_str = """
-#.###
-#v..#
-###.#
-""".strip()
-    trail = puzzle.parse_hiking_trail(input_str)
-    assert trail.find_longest_path() == 1  # Only one valid path due to slope
-
-def test_no_valid_path():
-    input_str = """
-#.###
-#^..#
-###.#
-""".strip()
-    trail = puzzle.parse_hiking_trail(input_str)
-    assert trail.find_longest_path() == 1  # No valid path due to upward slope
-
-def test_path_with_multiple_slopes():
-    input_str = """
-#.####
-#v...#
-#>v..#
-####.#
-""".strip()
-    trail = puzzle.parse_hiking_trail(input_str)
-    assert trail.find_longest_path() == 3  # Must follow slopes
-
-def test_solve_part_one(capsys):
-    print('Solving Part One:')
-    input = puzzle.read_input()
-    answer = puzzle.solve_part_one(input)
-    print(f'Part One : {answer}')
-    assert 0 == answer
+    grid = puzzle.parse_input(input_str)
+    
+    assert puzzle.solve(grid, ignore_slopes=True) == 154
 
 def test_solve_part_two(capsys):
     print('Solving Part Two:')
     input = puzzle.read_input()
     answer = puzzle.solve_part_two(input)
     print(f'Part Two : {answer}')
-    # assert 0 == answer
+    assert 6470 == answer
