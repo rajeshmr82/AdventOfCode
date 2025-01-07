@@ -32,7 +32,7 @@
 [![Day](https://badgen.net/badge/21/%E2%98%85%E2%98%85/green)](21)
 [![Day](https://badgen.net/badge/22/%E2%98%85%E2%98%85/green)](22)
 [![Day](https://badgen.net/badge/23/%E2%98%85%E2%98%85/green)](23)
-![Day](https://badgen.net/badge/24/%E2%98%86%E2%98%86/gray)
+[![Day](https://badgen.net/badge/24/%E2%98%85%E2%98%85/green)](24)
 ![Day](https://badgen.net/badge/25/%E2%98%86%E2%98%86/gray)
 
 <!--/SOLUTIONS-->
