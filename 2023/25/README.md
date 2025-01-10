@@ -1,4 +1,4 @@
-# Graph Partitioning Algorithm
+# Snowverload
 
 ## Problem Description
 The algorithm solves the problem of finding three edges (wires) in an undirected graph that, when removed, partition the graph into exactly two disconnected components, with the goal of finding the product of the sizes of these components.
