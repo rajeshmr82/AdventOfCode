@@ -14,7 +14,7 @@ except ImportError:
 
 # USER SPECIFIC PARAMETERS
 base_pos = "./"            # Folders will be created here. If you want to make a parent folder, change this to ex "./adventofcode/"
-USER_SESSION_ID = "53616c7465645f5f2b8adfd4daa6e8b325e3c6273b88c6afbc902db8ec02def80099765a922aa24ecc1e75a39050363b7657f53871ed86450bb6e8b76ebe0dfb"       # Get your session by inspecting the session cookie content in your web browser while connected to adventofcode and paste it here as plain text in between the ". Leave at is to not download inputs.
+USER_SESSION_ID = "53616c7465645f5f81ae720ff248fbb5f6c9d4041a64961b5fb07d1a7333fe7d71b8b2f3baeb4968968a29b24c732a76a890bbd7ede88134b61d03874f65e92a"       # Get your session by inspecting the session cookie content in your web browser while connected to adventofcode and paste it here as plain text in between the ". Leave at is to not download inputs.
 DOWNLOAD_STATEMENTS = False # Set to false to not download statements. Note that only part one is downloaded (since you need to complete it to access part two)
 DOWNLOAD_INPUTS = True     # Set to false to not download inputs. Note that if the USER_SESSION_ID is wrong or left empty, inputs will not be downloaded.
 MAKE_CODE_TEMPLATE = True  # Set to false to not make code templates. Note that even if OVERWRITE is set to True, it will never overwrite codes.
@@ -24,9 +24,9 @@ OVERWRITE = False          # If you really need to download the whole thing agai
 
 # DATE SPECIFIC PARAMETERS
 date = "December 2023"              # Date automatically put in the code templates.
-starting_advent_of_code_year = 2023 # You can go as early as 2015.
-last_advent_of_code_year = 2023     # The setup will download all advent of code data up until that date included
-last_advent_of_code_day = 25        # If the year isn't finished, the setup will download days up until that day included for the last year
+starting_advent_of_code_year = 2024 # You can go as early as 2015.
+last_advent_of_code_year = 2024     # The setup will download all advent of code data up until that date included
+last_advent_of_code_day = 2        # If the year isn't finished, the setup will download days up until that day included for the last year
 # Imports
 
 # Code
@@ -46,22 +46,26 @@ for y in years:
         os.mkdir(base_pos+str(y))
     year_pos = base_pos + str(y)
     for d in (d for d in days if (y < last_advent_of_code_year or d <= last_advent_of_code_day)):
-        print("    Day "+str(d));
-        if not os.path.exists(year_pos+"/"+str(d)):
-            os.mkdir(year_pos+"/"+str(d))
-        day_pos = year_pos+"/"+str(d)
+        print("    Day "+str(d))
+        day_pos = f"{d:02}"  # Zero padding for day
+        print("day_pos: "+day_pos)
+        print("year_pos: "+year_pos)
+        print(str(year_pos + '/day_' + day_pos))
+        if not os.path.exists(year_pos + "/day_" + day_pos):
+            os.mkdir(year_pos + "/day_" + day_pos)
 
         # if MAKE_CODE_TEMPLATE and not os.path.exists(day_pos+"/code.py"):
         #     code = open(day_pos+"/code.py", "w+")
         #     code.write("# Advent of code Year "+str(y)+" Day "+str(d)+" solution\n# Author = "+author+"\n# Date = "+date+"\n\nwith open((__file__.rstrip(\"code.py\")+\"input.txt\"), 'r') as input_file:\n    input = input_file.read()\n\n\n\nprint(\"Part One : \"+ str(None))\n\n\n\nprint(\"Part Two : \"+ str(None))")
         #     code.close()
-        if MAKE_CODE_TEMPLATE and not (os.path.exists(day_pos + "/puzzle.py") and glob.glob(day_pos + "/test_puzzle_day_*.py")):
+        if MAKE_CODE_TEMPLATE and not (os.path.exists(year_pos + "/day_" + day_pos + "/puzzle.py") and glob.glob(year_pos + "/day_" + day_pos + "/test_puzzle_day_*.py")):
             # Copy puzzle.py and test_puzzle_day_.py from template folder
-            template_path = os.path.join(year_pos, "template")
-            # template_path = os.path.join(os.getcwd(), "template")  
-            copy2(os.path.join(template_path, "puzzle.py"), os.path.join(day_pos, "puzzle.py"))
-            copy2(os.path.join(template_path, "test_puzzle_day_.py"), os.path.join(day_pos, f"test_puzzle_day_{d}.py"))                
-        if DOWNLOAD_INPUTS and (not os.path.exists(day_pos+"/input.txt") or OVERWRITE)and USER_SESSION_ID != "":
+            # template_path = os.path.join(year_pos, "template")
+            template_path = os.path.join(os.getcwd(), "template")  
+            print("template path: "+template_path)
+            copy2(os.path.join(template_path, "puzzle.py"), os.path.join(year_pos + "/day_" + day_pos, "puzzle.py"))
+            copy2(os.path.join(template_path, "test_puzzle_day_.py"), os.path.join(year_pos + "/day_" + day_pos, f"test_puzzle_day_{d}.py"))                
+        if DOWNLOAD_INPUTS and (not os.path.exists(year_pos + "/day_" + day_pos + "/input.txt") or OVERWRITE)and USER_SESSION_ID != "":
             done = False
             error_count = 0
             while(not done):
@@ -69,7 +73,7 @@ for y in years:
                     with requests.get(url=link+str(y)+"/day/"+str(d)+"/input", cookies={"session": USER_SESSION_ID}, headers={"User-Agent": USER_AGENT}) as response:
                         if response.ok:
                             data = response.text
-                            input = open(day_pos+"/input.txt", "w+")
+                            input = open(year_pos + "/day_" + day_pos + "/input.txt", "w+")
                             input.write(data.rstrip("\n"))
                             input.close()
                         else:
@@ -87,7 +91,7 @@ for y in years:
                 except Exception as e:
                     print("        Non handled error while requesting input from server. " + str(e))
                     done = True
-        if DOWNLOAD_STATEMENTS and (not os.path.exists(day_pos+"/statement.html") or OVERWRITE):
+        if DOWNLOAD_STATEMENTS and (not os.path.exists(year_pos + "/day_" + day_pos + "/statement.html") or OVERWRITE):
             done = False
             error_count = 0
             while(not done):
@@ -98,7 +102,7 @@ for y in years:
                             start = html.find("<article")
                             end = html.rfind("</article>")+len("</article>")
                             end_success = html.rfind("</code>")+len("</code>")
-                            statement = open(day_pos+"/statement.html", "w+")
+                            statement = open(year_pos + "/day_" + day_pos + "/statement.html", "w+")
                             statement.write(html[start:max(end, end_success)])
                             statement.close()
                         done = True
@@ -112,8 +116,8 @@ for y in years:
                 except Exception as e:
                     print("        Non handled error while requesting statement from server. " + str(e))
                     done = True
-        if MAKE_URL and (not os.path.exists(day_pos+"/link.url") or OVERWRITE):
-            url = open(day_pos+"/link.url", "w+")
+        if MAKE_URL and (not os.path.exists(year_pos + "/day_" + day_pos + "/link.url") or OVERWRITE):
+            url = open(year_pos + "/day_" + day_pos + "/link.url", "w+")
             url.write("[InternetShortcut]\nURL="+link+str(y)+"/day/"+str(d)+"\n")
             url.close()
 print("Setup complete : adventofcode working directories and files initialized with success.")
