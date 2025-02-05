@@ -9,8 +9,8 @@
 
 <!--SOLUTIONS-->
 
-[![Day](https://badgen.net/badge/01/%E2%98%85%E2%98%85/green)](1)
-[![Day](https://badgen.net/badge/02/%E2%98%85%E2%98%85/green)](2)
+[![Day](https://badgen.net/badge/01/%E2%98%85%E2%98%85/green)](day_01)
+[![Day](https://badgen.net/badge/02/%E2%98%85%E2%98%85/green)](day_02)
 [![Day](https://badgen.net/badge/03/%E2%98%85%E2%98%85/grey)]()
 [![Day](https://badgen.net/badge/04/%E2%98%85%E2%98%85/grey)]()
 [![Day](https://badgen.net/badge/05/%E2%98%85%E2%98%85/grey)]()
