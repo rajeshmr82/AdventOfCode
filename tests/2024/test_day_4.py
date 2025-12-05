@@ -1,17 +1,24 @@
-import puzzle
 import pytest
+import sys
+sys.path.append('2024/day_04')
+import puzzle
+
 
 @pytest.fixture
 def sample_input_string():
-    return """7 6 4 2 1
-1 2 7 8 9
-9 7 6 2 1
-1 3 2 4 5
-8 6 4 4 1
-1 3 6 7 9"""
+    return """MMMSXXMASM
+MSAMXMSMSA
+AMXSXMAAMM
+MSAMASMSMX
+XMASAMXAMM
+XXAMMXXAMA
+SMSMSASXSS
+SAXAMASAAA
+MAMMMXMMMM
+MXMXAXMASX"""
 
-def test_part_one_for_sample(sample_input_string):  
-    assert puzzle.count_safe_reports(sample_input_string) == 10
+def test_word_count(sample_input_string):
+    assert puzzle.word_count(sample_input_string) == [(0, 3), (1, 1), (2, 4), (3, 3), (4, 0), (4, 6), (5, 3), (6, 2), (6, 6), (7, 1), (8, 3), (8, 10)]
 
 def test_solve_part_one(capsys):
     print('Solving Part One:')
