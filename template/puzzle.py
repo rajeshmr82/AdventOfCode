@@ -1,6 +1,6 @@
 """
-Advent of Code 2025 - Day 1
-Author: Rajesh M R
+Advent of Code {year} - Day {day}
+Author: {author}
 """
 from pathlib import Path
 
@@ -68,13 +68,13 @@ if __name__ == "__main__":
     data = parse(raw)
     
     print("="*50)
-    print(f"Advent of Code 2025 - Day 1")
+    print(f"Advent of Code {year} - Day {day}")
     print("="*50)
     
     answer_one = solve_part_one(data)
-    print(f"Part One: {answer_one}")
+    print(f"Part One: {{{{answer_one}}}}")
     
     answer_two = solve_part_two(data)
-    print(f"Part Two: {answer_two}")
+    print(f"Part Two: {{{{answer_two}}}}")
     
     print("="*50)
