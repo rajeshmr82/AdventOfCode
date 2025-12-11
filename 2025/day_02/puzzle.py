@@ -63,7 +63,32 @@ def solve_part_one(data):
     """
     return sum(sum_invalid_ids(start, end) for start, end in data)
 
-
+def find_all_invalid_ids(start, end):
+    invalid_ids = set()
+    
+    for k in range(1, len(str(end)) + 1):
+        min_pattern = 10 ** (k - 1)
+        max_pattern = 10 ** k - 1
+        
+        n = 2
+        while True:
+            multiplier = (10 ** (n * k) - 1) // (10 ** k - 1)
+            
+            if min_pattern * multiplier > end:
+                break
+            
+            first_pattern = max(min_pattern, (start + multiplier - 1) // multiplier)
+            last_pattern = min(max_pattern, end // multiplier)
+            
+            if first_pattern <= last_pattern:
+                for p in range(first_pattern, last_pattern + 1):
+                    invalid_ids.add(p * multiplier)
+            
+            n += 1
+    
+    return sum(invalid_ids)
+    
+    return invalid_ids
 def solve_part_two(data):
     """
     Solve part two of the puzzle.
@@ -74,9 +99,7 @@ def solve_part_two(data):
     Returns:
         The answer to part two
     """
-    # TODO: Implement solution
-    result = None
-    return result
+    return sum(find_all_invalid_ids(start, end) for start, end in data)
 
 
 # Helper functions (add as needed)

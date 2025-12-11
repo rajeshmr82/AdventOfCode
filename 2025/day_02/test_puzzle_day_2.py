@@ -44,8 +44,7 @@ class TestDay02:
             data = parse(SAMPLE_INPUT)
             result = solve_part_two(data)
             print(f"Part Two (sample): {result}")
-            # Uncomment once you know the expected answer:
-            # assert result == EXPECTED_SAMPLE_ANSWER
+            assert result == 4174379265
     
     def test_part_two_solution(self):
         """Test part two with actual input."""
@@ -55,8 +54,7 @@ class TestDay02:
         print(f"\n{'='*50}")
         print(f"⭐ Part Two Solution: {result}")
         print(f"{'='*50}")
-        # Once you submit and get the correct answer:
-        # assert result == YOUR_CORRECT_ANSWER
+        assert result == 43287141963
 
 
 # Add unit tests for helper functions below
