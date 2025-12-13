@@ -132,17 +132,7 @@ class TestDay04:
         print(f"\n{'=' * 50}")
         print(f"⭐ Part Two Solution: {result}")
         print(f"{'=' * 50}")
-        # Once you submit and get the correct answer:
-        # assert result == YOUR_CORRECT_ANSWER
-
-
-# Add unit tests for helper functions below
-def test_helper_example():
-    """Example test for a helper function."""
-    # from puzzle import helper_function
-    # result = helper_function(test_input)
-    # assert result == expected_output
-    pass
+        assert result == 8739
 
 
 if __name__ == "__main__":

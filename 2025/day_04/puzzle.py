@@ -69,7 +69,6 @@ def solve_part_two(data):
     Returns:
         The answer to part two
     """
-    # TODO: Implement solution
     grid = data.copy()
     rows, cols = grid.shape
 
@@ -77,7 +76,15 @@ def solve_part_two(data):
         (dr, dc) for dr in (-1, 0, 1) for dc in (-1, 0, 1) if (dr, dc) != (0, 0)
     ]
 
-    to_check = {(r, c) for r in range(rows) for c in range(cols) if grid[r, c] == "@"}
+    to_check = {tuple(pos) for pos in np.argwhere(grid == "@")}
+
+    def neighbors(r, c):
+        return sum(
+            0 <= r + dr < grid.shape[0]
+            and 0 <= c + dc < grid.shape[1]
+            and grid[r + dr, c + dc] == "@"
+            for dr, dc in directions
+        )
 
     total_removed = 0
 
@@ -90,31 +97,23 @@ def solve_part_two(data):
 
         return affected
 
-    while to_check:
-        accessible = [
-            (r, c)
-            for (r, c) in to_check
-            if grid[r, c] == "@"
-            and sum(
-                0 <= r + dr < grid.shape[0]
-                and 0 <= c + dc < grid.shape[1]
-                and grid[r + dr, c + dc] == "@"
-                for dr, dc in directions
-            )
-            < 4
+    while to_check and (
+        accessible := [
+            pos for pos in to_check if grid[tuple(pos)] == "@" and neighbors(*pos) < 4
         ]
+    ):
+        to_check = {
+            (r + dr, c + dc)
+            for r, c in accessible
+            for dr, dc in directions
+            if 0 <= r + dr < grid.shape[0]
+            and 0 <= c + dc < grid.shape[1]
+            and grid[r + dr, c + dc] == "@"
+        }
 
-        if not accessible:
-            break
-
-        next_check = set()
-
-        for r, c in accessible:
-            grid[r, c] = "."
-            next_check.update(get_affected_neighbours(r, c))
-
+        for pos in accessible:
+            grid[tuple(pos)] = "."
         total_removed += len(accessible)
-        to_check = next_check
 
         print(f"Removed {len(accessible)} rolls (total: {total_removed})")
 

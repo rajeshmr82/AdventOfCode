@@ -1,25 +1,25 @@
 [![AoC](https://badgen.net/badge/AoC/2025/blue)](https://adventofcode.com/2025)
 ![Language](https://badgen.net/badge/Language/Python/blue)
-[![Days Completed](https://badgen.net/badge/Days%20Completed/3/green)]()
-[![Stars](https://badgen.net/badge/Stars/6%E2%98%85/yellow)]()
+[![Days Completed](https://badgen.net/badge/Days%20Completed/4/green)]()
+[![Stars](https://badgen.net/badge/Stars/8%E2%98%85/yellow)]()
 
 # 🎄 Advent of Code 2025 🎄
 
 ## Solutions
 
 <!--SOLUTIONS-->
-[![Day](https://badgen.net/badge/01/%E2%98%85%E2%98%85/green)](2025/day_01)
-[![Day](https://badgen.net/badge/02/%E2%98%85%E2%98%85/green)](2025/day_02)
-[![Day](https://badgen.net/badge/03/%E2%98%85%E2%98%85/green)](2025/day_03)
-[![Day](https://badgen.net/badge/04/%E2%98%86%E2%98%86/grey)](2025/day_04)
-[![Day](https://badgen.net/badge/05/%E2%98%86%E2%98%86/grey)](2025/day_05)
-[![Day](https://badgen.net/badge/06/%E2%98%86%E2%98%86/grey)](2025/day_06)
-[![Day](https://badgen.net/badge/07/%E2%98%86%E2%98%86/grey)](2025/day_07)
-[![Day](https://badgen.net/badge/08/%E2%98%86%E2%98%86/grey)](2025/day_08)
-[![Day](https://badgen.net/badge/09/%E2%98%86%E2%98%86/grey)](2025/day_09)
-[![Day](https://badgen.net/badge/10/%E2%98%86%E2%98%86/grey)](2025/day_10)
-[![Day](https://badgen.net/badge/11/%E2%98%86%E2%98%86/grey)](2025/day_11)
-[![Day](https://badgen.net/badge/12/%E2%98%86%E2%98%86/grey)](2025/day_12)
+[![Day](https://badgen.net/badge/01/%E2%98%85%E2%98%85/green)](day_01)
+[![Day](https://badgen.net/badge/02/%E2%98%85%E2%98%85/green)](day_02)
+[![Day](https://badgen.net/badge/03/%E2%98%85%E2%98%85/green)](day_03)
+[![Day](https://badgen.net/badge/04/%E2%98%85%E2%98%85/green)](day_04)
+[![Day](https://badgen.net/badge/05/%E2%98%86%E2%98%86/grey)](day_05)
+[![Day](https://badgen.net/badge/06/%E2%98%86%E2%98%86/grey)](day_06)
+[![Day](https://badgen.net/badge/07/%E2%98%86%E2%98%86/grey)](day_07)
+[![Day](https://badgen.net/badge/08/%E2%98%86%E2%98%86/grey)](day_08)
+[![Day](https://badgen.net/badge/09/%E2%98%86%E2%98%86/grey)](day_09)
+[![Day](https://badgen.net/badge/10/%E2%98%86%E2%98%86/grey)](day_10)
+[![Day](https://badgen.net/badge/11/%E2%98%86%E2%98%86/grey)](day_11)
+[![Day](https://badgen.net/badge/12/%E2%98%86%E2%98%86/grey)](day_12)
 <!--/SOLUTIONS-->
 
 _Click a badge to go to the specific day._
@@ -32,10 +32,10 @@ _Click a badge to go to the specific day._
 
 | Day | Part 1 | Part 2 | Notes |
 |-----|--------|--------|-------|
-| [01](2025/day_01) | ⭐ | ⭐ | Distance calculation and similarity score |
-| [02](2025/day_02) | ⭐ | ⭐ | Invalid ID detection with pattern repetition |
-| [03](2025/day_03) | ⭐ | ⭐ | Battery joltage optimization with greedy selection |
-| 04 | | | |
+| [01](day_01) | ⭐ | ⭐ | Distance calculation and similarity score |
+| [02](day_02) | ⭐ | ⭐ | Invalid ID detection with pattern repetition |
+| [03](day_03) | ⭐ | ⭐ | Battery joltage optimization with greedy selection |
+| [04](day_04) | ⭐ | ⭐ | Forklift accessibility with cascading removal simulation |
 | 05 | | | |
 | 06 | | | |
 | 07 | | | |
@@ -67,6 +67,10 @@ AdventOfCode/
 │   │   ├── solution.py
 │   │   ├── input.txt
 │   │   └── README.md
+│   ├── day_04/
+│   │   ├── solution.py
+│   │   ├── input.txt
+│   │   └── README.md
 │   └── ...
 ├── 2024/
 │   └── ...
@@ -78,10 +82,10 @@ AdventOfCode/
 
 ## Progress Statistics
 
-- **Total Stars**: 6 ⭐
-- **Completion Rate**: 25% (3/12 days)
-- **Current Streak**: 3 days 🔥
-- **Last Updated**: December 12, 2025
+- **Total Stars**: 8 ⭐
+- **Completion Rate**: 33% (4/12 days)
+- **Current Streak**: 4 days 🔥
+- **Last Updated**: December 13, 2025
 
 > **Note**: Advent of Code 2025 features 12 days instead of the traditional 25 days.
 
@@ -108,6 +112,15 @@ AdventOfCode/
 - **Part 2**: Pick 12 batteries to maximize 12-digit number with "leave enough digits" constraint
 - **Challenge**: Understanding that the second digit must appear after the first in sequence
 
+### Day 4: Forklift Accessibility
+- Explored grid navigation and neighbor counting patterns
+- Implemented cascading removal simulation with optimization
+- **Key Insight**: Track only affected cells instead of rechecking entire grid
+- **Part 1**: Count rolls with < 4 neighbors (perimeter identification)
+- **Part 2**: Iterative erosion - clusters shrink from outside → inside like peeling an onion
+- **Challenge**: Optimizing the simulation to avoid O(k×n²×m²) complexity by tracking affected neighbors
+- **Technique**: Early exit when counting neighbors (stop at 4), set operations for efficient neighbor tracking
+
 ---
 
 ## Running the Solutions
@@ -129,7 +142,7 @@ python run_all.py --year 2025
 
 - [ ] Complete all 12 days
 - [x] Document the mathematical intuition for each problem
-- [ ] Optimize solutions for performance
+- [x] Optimize solutions for performance
 - [x] Write comprehensive explanations in READMEs
 - [ ] Share learnings with the community
 
