@@ -6,7 +6,10 @@ Author: Rajesh M R
 from dataclasses import dataclass
 from pathlib import Path
 import re
-from typing import List, Set
+from typing import List
+import re
+from dataclasses import dataclass
+from typing import List
 
 
 def read_input(filename="input.txt"):
@@ -16,7 +19,7 @@ def read_input(filename="input.txt"):
 
 
 """
-Optimized Ingredient Database Parser
+Ingredient Database Parser
 
 Efficiently handles large ranges and many lookups by storing ranges
 instead of expanding them into individual IDs.
@@ -24,10 +27,6 @@ instead of expanding them into individual IDs.
 Memory complexity: O(n) where n is the number of ranges (not the size of ranges)
 Lookup complexity: O(n) where n is the number of ranges
 """
-
-import re
-from dataclasses import dataclass
-from typing import List, Set, Tuple
 
 
 @dataclass
@@ -37,8 +36,8 @@ class Range:
     start: int
     end: int
 
-    def contains(self, value: int) -> bool:
-        """Check if value is in this range."""
+    def __contains__(self, value: int) -> bool:
+        """Check if value is in this range using 'in' operator."""
         return self.start <= value <= self.end
 
     def __repr__(self):
@@ -47,98 +46,83 @@ class Range:
 
 class IngredientDatabase:
     """
-    Ingredient database that stores ranges.
+    Memory-efficient ingredient database using range-based storage.
 
-    Efficient for large ranges (e.g., 1-1000000000) and many ranges (175+).
+    Example:
+        >>> db = parse("1-10\\n\\n5\\n15")
+        >>> db.is_fresh(5)
+        True
+        >>> db.fresh_available
+        [5]
+        >>> len(db)
+        2
     """
 
-    def __init__(self, fresh_ranges: List[Range], available_ingredient_ids: List[int]):
-        """
-        Initialize the database.
-
-        Args:
-            fresh_ranges: List of Range objects representing fresh ingredient ranges
-            available_ingredient_ids: List of available ingredient IDs
-        """
-        self.fresh_ranges = fresh_ranges
-        self.available_ingredient_ids = available_ingredient_ids
-
-        # Optional: merge overlapping ranges for even better performance
-        # This is optional but can reduce lookup time
+    def __init__(self, fresh_ranges: List[Range], available_ids: List[int]):
+        """Initialize with ranges and available IDs (ranges are auto-merged)."""
+        self.available_ids = available_ids
         self.fresh_ranges = self._merge_ranges(fresh_ranges)
 
     def _merge_ranges(self, ranges: List[Range]) -> List[Range]:
-        """
-        Merge overlapping or adjacent ranges.
-
-        This optimization reduces the number of ranges to check during lookups.
-        For 175 ranges with overlaps, this could reduce to fewer ranges.
-        """
+        """Merge overlapping or adjacent ranges for better performance."""
         if not ranges:
             return []
 
-        # Sort ranges by start position
+        # Sort by start position and merge
         sorted_ranges = sorted(ranges, key=lambda r: r.start)
-
         merged = [sorted_ranges[0]]
 
         for current in sorted_ranges[1:]:
             last = merged[-1]
 
-            # Check if ranges overlap or are adjacent
+            # Merge if overlapping or adjacent
             if current.start <= last.end + 1:
-                # Merge by extending the end of the last range
                 last.end = max(last.end, current.end)
             else:
-                # No overlap, add as new range
                 merged.append(current)
 
         return merged
 
     def is_fresh(self, ingredient_id: int) -> bool:
-        """
-        Check if an ingredient ID is fresh.
-
-        Time complexity: O(n) where n is the number of ranges
-        Space complexity: O(1)
-        """
-        for range_obj in self.fresh_ranges:
-            if range_obj.contains(ingredient_id):
-                return True
-        return False
+        """Check if an ingredient ID is fresh (in any range)."""
+        return any(ingredient_id in r for r in self.fresh_ranges)
 
     def is_available(self, ingredient_id: int) -> bool:
         """Check if an ingredient ID is available."""
-        return ingredient_id in self.available_ingredient_ids
+        return ingredient_id in self.available_ids
 
-    def count_fresh_available(self) -> int:
-        """
-        Count how many available ingredients are fresh.
-
-        More efficient than creating a set of all fresh IDs.
-        """
-        count = 0
-        for ingredient_id in self.available_ingredient_ids:
-            if self.is_fresh(ingredient_id):
-                count += 1
-        return count
-
-    def get_fresh_available_ids(self) -> List[int]:
+    @property
+    def fresh_available(self) -> List[int]:
         """Get ingredient IDs that are both fresh and available."""
-        return [
-            ingredient_id
-            for ingredient_id in self.available_ingredient_ids
-            if self.is_fresh(ingredient_id)
-        ]
+        return [id for id in self.available_ids if self.is_fresh(id)]
 
-    def get_stats(self) -> dict:
-        """Get statistics about the database."""
-        return {
-            "num_ranges": len(self.fresh_ranges),
-            "num_available": len(self.available_ingredient_ids),
-            "num_fresh_available": self.count_fresh_available(),
-            "ranges": [(r.start, r.end) for r in self.fresh_ranges],
-        }
+    def __len__(self) -> int:
+        """Return number of available ingredients."""
+        return len(self.available_ids)
+
+    def __repr__(self) -> str:
+        """Return clean string representation."""
+        return f"IngredientDatabase(ranges={len(self.fresh_ranges)}, available={len(self.available_ids)})"
+
+    def __str__(self) -> str:
+        """Return user-friendly string representation."""
+        return f"Database with {len(self.fresh_ranges)} range(s) and {len(self.available_ids)} available ingredient(s)"
+
+    @property
+    def total_fresh_count(self) -> int:
+        """
+        Count total number of distinct fresh ingredient IDs across all ranges.
+
+        This counts how many unique IDs are covered by the fresh ranges,
+        handling overlaps correctly.
+
+        Example:
+            >>> db = parse("3-5\\n10-14\\n")
+            >>> db.total_fresh_count
+            8
+        """
+        # After merging, ranges don't overlap, so we can just sum their sizes
+        return sum(r.end - r.start + 1 for r in self.fresh_ranges)
 
 
 def parse(text: str) -> IngredientDatabase:
@@ -153,73 +137,81 @@ def parse(text: str) -> IngredientDatabase:
 
     Raises:
         ValueError: If the format is invalid
+
+    Example:
+        >>> data = '''3-5
+        ... 10-14
+        ...
+        ... 1
+        ... 5'''
+        >>> db = parse(data)
+        >>> db.is_fresh(5)
+        True
     """
     # Handle empty input
     if not text or not text.strip():
-        return IngredientDatabase(fresh_ranges=[], available_ingredient_ids=[])
+        return IngredientDatabase(fresh_ranges=[], available_ids=[])
 
     lines = text.split("\n")
 
     # Find the blank line separator
     try:
-        separator_index = lines.index("")
+        separator = lines.index("")
     except ValueError:
         raise ValueError(
             "Invalid format: missing blank line separator between ranges and IDs"
         )
 
     # Parse fresh ingredient ranges
-    range_lines = lines[:separator_index]
-    fresh_ranges = []
+    fresh_ranges = _parse_ranges(lines[:separator])
 
-    # Pattern to match ranges: handles negative numbers correctly
-    # Matches: "5-10", "-5-10", "5--10", "-5--10"
-    range_pattern = r"^(-?\d+)-(-?\d+)$"
+    # Parse available ingredient IDs
+    available_ids = _parse_ids(lines[separator + 1 :])
 
-    for line in range_lines:
+    return IngredientDatabase(fresh_ranges=fresh_ranges, available_ids=available_ids)
+
+
+def _parse_ranges(lines: List[str]) -> List[Range]:
+    """Parse range lines into Range objects."""
+    ranges = []
+    range_pattern = re.compile(r"^(-?\d+)-(-?\d+)$")
+
+    for line in lines:
         line = line.strip()
         if not line:
             continue
 
-        match = re.match(range_pattern, line)
+        match = range_pattern.match(line)
         if not match:
             raise ValueError(
                 f"Invalid range format: '{line}' (expected format: 'start-end')"
             )
 
-        try:
-            start_id = int(match.group(1))
-            end_id = int(match.group(2))
+        start, end = int(match.group(1)), int(match.group(2))
 
-            if start_id > end_id:
-                raise ValueError(
-                    f"Invalid range: {start_id}-{end_id} (start must be <= end)"
-                )
+        if start > end:
+            raise ValueError(f"Invalid range: {start}-{end} (start must be <= end)")
 
-            fresh_ranges.append(Range(start_id, end_id))
-        except ValueError as e:
-            if "invalid literal" in str(e):
-                raise ValueError(f"Invalid range format: '{line}' (expected integers)")
-            raise
+        ranges.append(Range(start, end))
 
-    # Parse available ingredient IDs
-    available_lines = lines[separator_index + 1 :]
-    available_ids = []
+    return ranges
 
-    for line in available_lines:
+
+def _parse_ids(lines: List[str]) -> List[int]:
+    """Parse ID lines into a list of integers."""
+    ids = []
+
+    for line in lines:
         line = line.strip()
         if not line:
             continue
 
         try:
-            ingredient_id = int(line)
-            available_ids.append(ingredient_id)
+            ids.append(int(line))
         except ValueError:
             raise ValueError(f"Invalid ingredient ID: '{line}' (expected integer)")
 
-    return IngredientDatabase(
-        fresh_ranges=fresh_ranges, available_ingredient_ids=available_ids
-    )
+    return ids
 
 
 def solve_part_one(data):
@@ -232,7 +224,7 @@ def solve_part_one(data):
     Returns:
         The answer to part one
     """
-    return data.count_fresh_available()
+    return len(data.fresh_available)
 
 
 def solve_part_two(data):
@@ -245,9 +237,7 @@ def solve_part_two(data):
     Returns:
         The answer to part two
     """
-    # TODO: Implement solution
-    result = None
-    return result
+    return data.total_fresh_count
 
 
 # Helper functions (add as needed)

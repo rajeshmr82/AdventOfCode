@@ -5,7 +5,6 @@ Author: Rajesh M R
 
 import pytest
 from puzzle import (
-    IngredientDatabase,
     Range,
     read_input,
     parse,
@@ -27,38 +26,29 @@ SAMPLE_INPUT = """3-5
 17
 32"""
 
-"""
-Tests for the ingredient database parser
-"""
-
-
-"""
-Tests for the optimized ingredient database parser
-"""
-
 
 class TestRange:
     """Tests for the Range class."""
 
-    def test_range_contains(self):
-        """Test that Range.contains works correctly."""
+    def test_range_contains_with_in_operator(self):
+        """Test that Range supports 'in' operator (Pythonic)."""
         r = Range(5, 10)
 
-        assert r.contains(5) is True
-        assert r.contains(7) is True
-        assert r.contains(10) is True
-        assert r.contains(4) is False
-        assert r.contains(11) is False
+        assert 5 in r
+        assert 7 in r
+        assert 10 in r
+        assert 4 not in r
+        assert 11 not in r
 
     def test_range_with_negative_numbers(self):
         """Test Range with negative numbers."""
         r = Range(-5, 5)
 
-        assert r.contains(-5) is True
-        assert r.contains(0) is True
-        assert r.contains(5) is True
-        assert r.contains(-6) is False
-        assert r.contains(6) is False
+        assert -5 in r
+        assert 0 in r
+        assert 5 in r
+        assert -6 not in r
+        assert 6 not in r
 
 
 class TestRangeMerging:
@@ -159,7 +149,7 @@ class TestOptimizedParsing:
         assert db.is_fresh(32) is False
 
         # Check available ingredient IDs
-        assert db.available_ingredient_ids == [1, 5, 8, 11, 17, 32]
+        assert db.available_ids == [1, 5, 8, 11, 17, 32]
 
     def test_large_range_efficiency(self):
         """Test that large ranges don't cause memory issues."""
@@ -199,6 +189,53 @@ class TestOptimizedParsing:
         assert db.is_fresh(5500) is False  # Between ranges 5000-5100 and 6000-6100
 
 
+class TestPythonicAPI:
+    """Tests for Pythonic API improvements."""
+
+    def test_fresh_available_property(self):
+        """Test the fresh_available property (Pythonic)."""
+        text = """3-5
+10-14
+
+1
+5
+8
+11
+17"""
+
+        db = parse(text)
+
+        # Use property instead of method
+        fresh_and_available = db.fresh_available
+        assert fresh_and_available == [5, 11]
+
+    def test_len_method(self):
+        """Test the __len__ method (Pythonic)."""
+        text = """1-3
+
+5
+10
+15"""
+
+        db = parse(text)
+
+        assert len(db) == 3
+
+    def test_repr_method(self):
+        """Test the __repr__ method (Pythonic)."""
+        text = """1-3
+
+5
+10"""
+
+        db = parse(text)
+
+        repr_str = repr(db)
+        assert "IngredientDatabase" in repr_str
+        assert "ranges=" in repr_str
+        assert "available=" in repr_str
+
+
 class TestOptimizedMethods:
     """Tests for optimized method implementations."""
 
@@ -232,56 +269,6 @@ class TestOptimizedMethods:
         assert db.is_available(1) is False
         assert db.is_available(20) is False
 
-    def test_count_fresh_available(self):
-        """Test counting fresh and available ingredients."""
-        text = """3-5
-10-14
-
-1
-5
-8
-11
-17"""
-
-        db = parse(text)
-
-        # 5 and 11 are both fresh and available
-        count = db.count_fresh_available()
-        assert count == 2
-
-    def test_get_fresh_available_ids(self):
-        """Test getting IDs that are both fresh and available."""
-        text = """3-5
-10-14
-
-1
-5
-8
-11
-17"""
-
-        db = parse(text)
-
-        fresh_and_available = db.get_fresh_available_ids()
-        assert fresh_and_available == [5, 11]
-
-    def test_get_stats(self):
-        """Test the stats method."""
-        text = """3-5
-10-14
-
-1
-5"""
-
-        db = parse(text)
-
-        stats = db.get_stats()
-        assert "num_ranges" in stats
-        assert "num_available" in stats
-        assert "num_fresh_available" in stats
-        assert stats["num_available"] == 2
-        assert stats["num_fresh_available"] == 1  # Only 5 is both fresh and available
-
 
 class TestEdgeCases:
     """Tests for edge cases with optimized parser."""
@@ -292,7 +279,7 @@ class TestEdgeCases:
 
         db = parse(text)
         assert len(db.fresh_ranges) == 0
-        assert db.available_ingredient_ids == []
+        assert db.available_ids == []
 
     def test_negative_ranges(self):
         """Test that negative ranges work correctly."""
@@ -362,7 +349,7 @@ class TestPerformanceComparison:
         db = parse(text)
 
         # Get all fresh available ingredients
-        fresh_available = db.get_fresh_available_ids()
+        fresh_available = db.fresh_available
 
         # Should find those that fall in the ranges
         assert len(fresh_available) > 0
@@ -430,8 +417,7 @@ class TestDay05:
             data = parse(SAMPLE_INPUT)
             result = solve_part_two(data)
             print(f"Part Two (sample): {result}")
-            # Uncomment once you know the expected answer:
-            # assert result == EXPECTED_SAMPLE_ANSWER
+            assert result == 14
 
     def test_part_two_solution(self):
         """Test part two with actual input."""
@@ -441,17 +427,7 @@ class TestDay05:
         print(f"\n{'=' * 50}")
         print(f"⭐ Part Two Solution: {result}")
         print(f"{'=' * 50}")
-        # Once you submit and get the correct answer:
-        # assert result == YOUR_CORRECT_ANSWER
-
-
-# Add unit tests for helper functions below
-def test_helper_example():
-    """Example test for a helper function."""
-    # from puzzle import helper_function
-    # result = helper_function(test_input)
-    # assert result == expected_output
-    pass
+        assert result == 344423158480189
 
 
 if __name__ == "__main__":

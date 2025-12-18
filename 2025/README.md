@@ -1,7 +1,7 @@
 [![AoC](https://badgen.net/badge/AoC/2025/blue)](https://adventofcode.com/2025)
 ![Language](https://badgen.net/badge/Language/Python/blue)
-[![Days Completed](https://badgen.net/badge/Days%20Completed/4/green)]()
-[![Stars](https://badgen.net/badge/Stars/8%E2%98%85/yellow)]()
+[![Days Completed](https://badgen.net/badge/Days%20Completed/5/green)]()
+[![Stars](https://badgen.net/badge/Stars/10%E2%98%85/yellow)]()
 
 # 🎄 Advent of Code 2025 🎄
 
@@ -12,7 +12,7 @@
 [![Day](https://badgen.net/badge/02/%E2%98%85%E2%98%85/green)](day_02)
 [![Day](https://badgen.net/badge/03/%E2%98%85%E2%98%85/green)](day_03)
 [![Day](https://badgen.net/badge/04/%E2%98%85%E2%98%85/green)](day_04)
-[![Day](https://badgen.net/badge/05/%E2%98%86%E2%98%86/grey)](day_05)
+[![Day](https://badgen.net/badge/05/%E2%98%85%E2%98%85/green)](day_05)
 [![Day](https://badgen.net/badge/06/%E2%98%86%E2%98%86/grey)](day_06)
 [![Day](https://badgen.net/badge/07/%E2%98%86%E2%98%86/grey)](day_07)
 [![Day](https://badgen.net/badge/08/%E2%98%86%E2%98%86/grey)](day_08)
@@ -36,7 +36,7 @@ _Click a badge to go to the specific day._
 | [02](day_02) | ⭐ | ⭐ | Invalid ID detection with pattern repetition |
 | [03](day_03) | ⭐ | ⭐ | Battery joltage optimization with greedy selection |
 | [04](day_04) | ⭐ | ⭐ | Forklift accessibility with cascading removal simulation |
-| 05 | | | |
+| [05](day_05) | ⭐ | ⭐ | Ingredient database with range-based parsing |
 | 06 | | | |
 | 07 | | | |
 | 08 | | | |
@@ -82,10 +82,10 @@ AdventOfCode/
 
 ## Progress Statistics
 
-- **Total Stars**: 8 ⭐
-- **Completion Rate**: 33% (4/12 days)
-- **Current Streak**: 4 days 🔥
-- **Last Updated**: December 13, 2025
+- **Total Stars**: 10 ⭐
+- **Completion Rate**: 42% (5/12 days)
+- **Current Streak**: 5 days 🔥
+- **Last Updated**: December 18, 2025
 
 > **Note**: Advent of Code 2025 features 12 days instead of the traditional 25 days.
 
@@ -120,6 +120,18 @@ AdventOfCode/
 - **Part 2**: Iterative erosion - clusters shrink from outside → inside like peeling an onion
 - **Challenge**: Optimizing the simulation to avoid O(k×n²×m²) complexity by tracking affected neighbors
 - **Technique**: Early exit when counting neighbors (stop at 4), set operations for efficient neighbor tracking
+
+### Day 5: Ingredient Database
+- Built a memory-efficient parser for large-scale ingredient databases
+- Implemented range-based storage instead of expanding billions of IDs
+- **Key Insight**: Store ranges, not individual IDs - handles `1-1000000000` in 16 bytes vs 28GB!
+- **Part 1**: Check which ingredients are fresh by testing membership in ranges
+- **Part 2**: Count total unique fresh IDs by merging overlapping ranges first
+- **Challenge**: Overlapping ranges cause double-counting - merge `10-14` and `12-18` → `10-18`
+- **Technique**: Range merging algorithm sorts and combines adjacent/overlapping ranges
+- **Performance**: 175 ranges with 1000 checks in ~3ms; handles billions of IDs efficiently
+- **Design**: Pythonic API with properties (`db.fresh_available`), magic methods (`len(db)`), and clean function names (`parse()`)
+- **Mathematics**: After merging, `total = Σ (end - start + 1)` for each non-overlapping range
 
 ---
 
