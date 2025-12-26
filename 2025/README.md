@@ -1,7 +1,7 @@
 [![AoC](https://badgen.net/badge/AoC/2025/blue)](https://adventofcode.com/2025)
 ![Language](https://badgen.net/badge/Language/Python/blue)
-[![Days Completed](https://badgen.net/badge/Days%20Completed/6/green)]()
-[![Stars](https://badgen.net/badge/Stars/12%E2%98%85/yellow)]()
+[![Days Completed](https://badgen.net/badge/Days%20Completed/7/green)]()
+[![Stars](https://badgen.net/badge/Stars/14%E2%98%85/yellow)]()
 
 # 🎄 Advent of Code 2025 🎄
 
@@ -14,7 +14,7 @@
 [![Day](https://badgen.net/badge/04/%E2%98%85%E2%98%85/green)](day_04)
 [![Day](https://badgen.net/badge/05/%E2%98%85%E2%98%85/green)](day_05)
 [![Day](https://badgen.net/badge/06/%E2%98%85%E2%98%85/green)](day_06)
-[![Day](https://badgen.net/badge/07/%E2%98%86%E2%98%86/grey)](day_07)
+[![Day](https://badgen.net/badge/07/%E2%98%85%E2%98%85/green)](day_07)
 [![Day](https://badgen.net/badge/08/%E2%98%86%E2%98%86/grey)](day_08)
 [![Day](https://badgen.net/badge/09/%E2%98%86%E2%98%86/grey)](day_09)
 [![Day](https://badgen.net/badge/10/%E2%98%86%E2%98%86/grey)](day_10)
@@ -38,7 +38,7 @@ _Click a badge to go to the specific day._
 | [04](day_04) | ⭐ | ⭐ | Forklift accessibility with cascading removal simulation |
 | [05](day_05) | ⭐ | ⭐ | Ingredient database with range-based parsing |
 | [06](day_06) | ⭐ | ⭐ | Arithmetic worksheet parser with spatial number representation |
-| 07 | | | |
+| [07](day_07) | ⭐ | ⭐ | Tachyon beam splitting with unique splitter counting and quantum timeline paths |
 | 08 | | | |
 | 09 | | | |
 | 10 | | | |
@@ -90,10 +90,10 @@ AdventOfCode/
 
 ## Progress Statistics
 
-- **Total Stars**: 12 ⭐
-- **Completion Rate**: 50% (6/12 days)
-- **Current Streak**: 6 days 🔥
-- **Last Updated**: December 23, 2025
+- **Total Stars**: 14 ⭐
+- **Completion Rate**: 58% (7/12 days)
+- **Current Streak**: 7 days 🔥
+- **Last Updated**: December 26, 2025
 
 > **Note**: Advent of Code 2025 features 12 days instead of the traditional 25 days.
 
@@ -153,6 +153,19 @@ AdventOfCode/
 - **Design Decision**: Two separate parsers - Part 1 uses regex (simple), Part 2 uses character grid (spatial)
 - **Edge Cases**: Varying number widths, multiple space separators, trailing spaces, adjacent problems
 - **Testing**: Order-independent assertions using set comparison since problem order varies in output
+
+### Day 7: Tachyon Manifold
+- Simulated quantum beam splitting through a 2D manifold grid
+- Implemented BFS-based beam propagation with splitter tracking
+- **Key Insight**: Track unique splitters hit, not total beam-splitter collisions
+- **Part 1**: Count unique splitters activated - beams split spatially but continue downward
+- **Part 2**: Count quantum timelines using recursive path enumeration with memoization
+- **Challenge**: Understanding that multiple beams can hit the same splitter (only count once)
+- **Optimization**: Jump directly to next splitter using pre-indexed columns instead of stepping cell-by-cell
+- **Algorithm**: Part 1 uses BFS with visited set, Part 2 uses recursive DP with memoization
+- **Mathematics**: Not 2^n timelines - only count valid complete paths that reach an exit
+- **Technique**: Memoization transforms exponential path counting into polynomial time
+- **Design Pattern**: Same position reached via different paths has same exit count (optimal substructure)
 
 ---
 
