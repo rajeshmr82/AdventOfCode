@@ -1,7 +1,7 @@
 [![AoC](https://badgen.net/badge/AoC/2025/blue)](https://adventofcode.com/2025)
 ![Language](https://badgen.net/badge/Language/Python/blue)
-[![Days Completed](https://badgen.net/badge/Days%20Completed/7/green)]()
-[![Stars](https://badgen.net/badge/Stars/14%E2%98%85/yellow)]()
+[![Days Completed](https://badgen.net/badge/Days%20Completed/8/green)]()
+[![Stars](https://badgen.net/badge/Stars/16%E2%98%85/yellow)]()
 
 # 🎄 Advent of Code 2025 🎄
 
@@ -15,7 +15,7 @@
 [![Day](https://badgen.net/badge/05/%E2%98%85%E2%98%85/green)](day_05)
 [![Day](https://badgen.net/badge/06/%E2%98%85%E2%98%85/green)](day_06)
 [![Day](https://badgen.net/badge/07/%E2%98%85%E2%98%85/green)](day_07)
-[![Day](https://badgen.net/badge/08/%E2%98%86%E2%98%86/grey)](day_08)
+[![Day](https://badgen.net/badge/08/%E2%98%85%E2%98%85/green)](day_08)
 [![Day](https://badgen.net/badge/09/%E2%98%86%E2%98%86/grey)](day_09)
 [![Day](https://badgen.net/badge/10/%E2%98%86%E2%98%86/grey)](day_10)
 [![Day](https://badgen.net/badge/11/%E2%98%86%E2%98%86/grey)](day_11)
@@ -39,7 +39,7 @@ _Click a badge to go to the specific day._
 | [05](day_05) | ⭐ | ⭐ | Ingredient database with range-based parsing |
 | [06](day_06) | ⭐ | ⭐ | Arithmetic worksheet parser with spatial number representation |
 | [07](day_07) | ⭐ | ⭐ | Tachyon beam splitting with unique splitter counting and quantum timeline paths |
-| 08 | | | |
+| [08](day_08) | ⭐ | ⭐ | Junction box circuit connection with MST and Union-Find |
 | 09 | | | |
 | 10 | | | |
 | 11 | | | |
@@ -56,29 +56,45 @@ AdventOfCode/
 ├── README.md
 ├── 2025/
 │   ├── day_01/
-│   │   ├── solution.py
+│   │   ├── puzzle.py
 │   │   ├── input.txt
-│   │   └── README.md
+│   │   ├── README.md
+│   │   └── test_puzzle_day_1.py
 │   ├── day_02/
-│   │   ├── solution.py
+│   │   ├── puzzle.py
 │   │   ├── input.txt
-│   │   └── README.md
+│   │   ├── README.md
+│   │   └── test_puzzle_day_2.py
 │   ├── day_03/
-│   │   ├── solution.py
+│   │   ├── puzzle.py
 │   │   ├── input.txt
-│   │   └── README.md
+│   │   ├── README.md
+│   │   └── test_puzzle_day_3.py
 │   ├── day_04/
-│   │   ├── solution.py
+│   │   ├── puzzle.py
 │   │   ├── input.txt
-│   │   └── README.md
+│   │   ├── README.md
+│   │   └── test_puzzle_day_4.py
 │   ├── day_05/
-│   │   ├── solution.py
+│   │   ├── puzzle.py
 │   │   ├── input.txt
-│   │   └── README.md
+│   │   ├── README.md
+│   │   └── test_puzzle_day_5.py
 │   ├── day_06/
-│   │   ├── solution.py
+│   │   ├── puzzle.py
 │   │   ├── input.txt
-│   │   └── README.md
+│   │   ├── README.md
+│   │   └── test_puzzle_day_6.py
+│   ├── day_07/
+│   │   ├── puzzle.py
+│   │   ├── input.txt
+│   │   ├── README.md
+│   │   └── test_puzzle_day_7.py
+│   ├── day_08/
+│   │   ├── puzzle.py
+│   │   ├── input.txt
+│   │   ├── README.md
+│   │   └── test_puzzle_day_8.py
 │   └── ...
 ├── 2024/
 │   └── ...
@@ -90,10 +106,10 @@ AdventOfCode/
 
 ## Progress Statistics
 
-- **Total Stars**: 14 ⭐
-- **Completion Rate**: 58% (7/12 days)
-- **Current Streak**: 7 days 🔥
-- **Last Updated**: December 26, 2025
+- **Total Stars**: 16 ⭐
+- **Completion Rate**: 67% (8/12 days)
+- **Current Streak**: 8 days 🔥
+- **Last Updated**: December 27, 2025
 
 > **Note**: Advent of Code 2025 features 12 days instead of the traditional 25 days.
 
@@ -166,6 +182,20 @@ AdventOfCode/
 - **Mathematics**: Not 2^n timelines - only count valid complete paths that reach an exit
 - **Technique**: Memoization transforms exponential path counting into polynomial time
 - **Design Pattern**: Same position reached via different paths has same exit count (optimal substructure)
+
+### Day 8: Junction Box Circuits
+- Connected junction boxes using minimum spanning tree (MST) with Kruskal's algorithm
+- Implemented Union-Find (Disjoint Set Union) for efficient connectivity tracking
+- **Key Insight**: "Attempts" vs "connections" - skipped edges still count toward attempt limit
+- **Part 1**: After N connection attempts, find sizes of three largest circuits (components)
+- **Part 2**: Complete the MST (N-1 edges for N nodes), return X-coordinates of final edge
+- **Challenge**: Understanding that trying to connect already-connected boxes counts as an attempt
+- **Algorithm**: Sort edges by Euclidean distance, greedily add shortest non-cycle-forming edges
+- **Data Structure**: Union-Find with path compression (O(α(N)) ≈ O(1)) and union by size
+- **Optimization**: Use squared distance instead of actual distance (avoids sqrt, same ordering)
+- **Mathematics**: A tree with N nodes requires exactly N-1 edges to be fully connected
+- **Technique**: Track successful unions vs attempts - component count = N - successful_unions
+- **Graph Theory**: This is a partial MST problem (Part 1) and complete MST problem (Part 2)
 
 ---
 
