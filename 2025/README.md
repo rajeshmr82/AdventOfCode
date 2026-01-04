@@ -1,7 +1,7 @@
 [![AoC](https://badgen.net/badge/AoC/2025/blue)](https://adventofcode.com/2025)
 ![Language](https://badgen.net/badge/Language/Python/blue)
-[![Days Completed](https://badgen.net/badge/Days%20Completed/8/green)]()
-[![Stars](https://badgen.net/badge/Stars/16%E2%98%85/yellow)]()
+[![Days Completed](https://badgen.net/badge/Days%20Completed/9/green)]()
+[![Stars](https://badgen.net/badge/Stars/18%E2%98%85/yellow)]()
 
 # 🎄 Advent of Code 2025 🎄
 
@@ -16,7 +16,7 @@
 [![Day](https://badgen.net/badge/06/%E2%98%85%E2%98%85/green)](day_06)
 [![Day](https://badgen.net/badge/07/%E2%98%85%E2%98%85/green)](day_07)
 [![Day](https://badgen.net/badge/08/%E2%98%85%E2%98%85/green)](day_08)
-[![Day](https://badgen.net/badge/09/%E2%98%86%E2%98%86/grey)](day_09)
+[![Day](https://badgen.net/badge/09/%E2%98%85%E2%98%85/green)](day_09)
 [![Day](https://badgen.net/badge/10/%E2%98%86%E2%98%86/grey)](day_10)
 [![Day](https://badgen.net/badge/11/%E2%98%86%E2%98%86/grey)](day_11)
 [![Day](https://badgen.net/badge/12/%E2%98%86%E2%98%86/grey)](day_12)
@@ -40,7 +40,7 @@ _Click a badge to go to the specific day._
 | [06](day_06) | ⭐ | ⭐ | Arithmetic worksheet parser with spatial number representation |
 | [07](day_07) | ⭐ | ⭐ | Tachyon beam splitting with unique splitter counting and quantum timeline paths |
 | [08](day_08) | ⭐ | ⭐ | Junction box circuit connection with MST and Union-Find |
-| 09 | | | |
+| [09](day_09) | ⭐ | ⭐ | Maximum rectangle from red tiles in rectilinear polygon |
 | 10 | | | |
 | 11 | | | |
 | 12 | | | |
@@ -106,10 +106,10 @@ AdventOfCode/
 
 ## Progress Statistics
 
-- **Total Stars**: 16 ⭐
-- **Completion Rate**: 67% (8/12 days)
-- **Current Streak**: 8 days 🔥
-- **Last Updated**: December 27, 2025
+- **Total Stars**: 18 ⭐
+- **Completion Rate**: 75% (9/12 days)
+- **Current Streak**: 9 days 🔥
+- **Last Updated**: January 4, 2026
 
 > **Note**: Advent of Code 2025 features 12 days instead of the traditional 25 days.
 
@@ -196,6 +196,21 @@ AdventOfCode/
 - **Mathematics**: A tree with N nodes requires exactly N-1 edges to be fully connected
 - **Technique**: Track successful unions vs attempts - component count = N - successful_unions
 - **Graph Theory**: This is a partial MST problem (Part 1) and complete MST problem (Part 2)
+
+### Day 9: Maximum Rectangle in Polygon
+- Found largest rectangles within rectilinear polygons using geometric properties
+- Implemented point-in-polygon tests with memoization for efficiency
+- **Key Insight**: All edges are axis-aligned → rectilinear polygon enables O(1) rectangle validation
+- **Part 1**: Find max rectangle using any two red tiles as opposite corners (simple O(n²))
+- **Part 2**: Rectangle must contain only red (vertices) or green (boundary/interior) tiles
+- **Challenge**: Largest rectangle has 1.47 billion points - can't check them all!
+- **Algorithm**: Check 4 corners are inside + no edges cross interior (sufficient for rectilinear polygons)
+- **Optimization**: Memoize polygon membership checks - first check O(n), subsequent O(1)
+- **Edge Intersection**: Edge crosses only if it has points strictly inside rectangle interior (not just touching)
+- **Mathematics**: For rectilinear polygon, corners inside + no edge crossings ⟹ all points inside
+- **Technique**: Ray casting for point-in-polygon, interval overlap detection for edge crossings
+- **Correctness vs Speed**: Geometric theorem avoids checking billions of points while guaranteeing correctness
+- **Final Answer**: Rectangle from (5254, 66490) to (94821, 50072) with area 1,470,616,992
 
 ---
 
