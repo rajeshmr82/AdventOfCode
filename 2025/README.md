@@ -1,7 +1,7 @@
 [![AoC](https://badgen.net/badge/AoC/2025/blue)](https://adventofcode.com/2025)
 ![Language](https://badgen.net/badge/Language/Python/blue)
-[![Days Completed](https://badgen.net/badge/Days%20Completed/9/green)]()
-[![Stars](https://badgen.net/badge/Stars/18%E2%98%85/yellow)]()
+[![Days Completed](https://badgen.net/badge/Days%20Completed/10/green)]()
+[![Stars](https://badgen.net/badge/Stars/20%E2%98%85/yellow)]()
 
 # 🎄 Advent of Code 2025 🎄
 
@@ -17,7 +17,7 @@
 [![Day](https://badgen.net/badge/07/%E2%98%85%E2%98%85/green)](day_07)
 [![Day](https://badgen.net/badge/08/%E2%98%85%E2%98%85/green)](day_08)
 [![Day](https://badgen.net/badge/09/%E2%98%85%E2%98%85/green)](day_09)
-[![Day](https://badgen.net/badge/10/%E2%98%86%E2%98%86/grey)](day_10)
+[![Day](https://badgen.net/badge/10/%E2%98%85%E2%98%85/green)](day_10)
 [![Day](https://badgen.net/badge/11/%E2%98%86%E2%98%86/grey)](day_11)
 [![Day](https://badgen.net/badge/12/%E2%98%86%E2%98%86/grey)](day_12)
 <!--/SOLUTIONS-->
@@ -41,7 +41,7 @@ _Click a badge to go to the specific day._
 | [07](day_07) | ⭐ | ⭐ | Tachyon beam splitting with unique splitter counting and quantum timeline paths |
 | [08](day_08) | ⭐ | ⭐ | Junction box circuit connection with MST and Union-Find |
 | [09](day_09) | ⭐ | ⭐ | Maximum rectangle from red tiles in rectilinear polygon |
-| 10 | | | |
+| [10](day_10) | ⭐ | ⭐ | Machine button optimization with GF(2) and Integer Linear Programming |
 | 11 | | | |
 | 12 | | | |
 
@@ -106,10 +106,10 @@ AdventOfCode/
 
 ## Progress Statistics
 
-- **Total Stars**: 18 ⭐
-- **Completion Rate**: 75% (9/12 days)
-- **Current Streak**: 9 days 🔥
-- **Last Updated**: January 4, 2026
+- **Total Stars**: 20 ⭐
+- **Completion Rate**: 83% (10/12 days)
+- **Current Streak**: 10 days 🔥
+- **Last Updated**: January 9, 2026
 
 > **Note**: Advent of Code 2025 features 12 days instead of the traditional 25 days.
 
@@ -211,6 +211,22 @@ AdventOfCode/
 - **Technique**: Ray casting for point-in-polygon, interval overlap detection for edge crossings
 - **Correctness vs Speed**: Geometric theorem avoids checking billions of points while guaranteeing correctness
 - **Final Answer**: Rectangle from (5254, 66490) to (94821, 50072) with area 1,470,616,992
+
+### Day 10: Machine Button Optimization
+- Optimized button presses for machines with lights (toggle) and counters (increment)
+- Implemented two completely different mathematical approaches for parts 1 and 2
+- **Key Insight**: Part 1 is linear algebra over GF(2), Part 2 is Integer Linear Programming - same problem, different math!
+- **Part 1**: Toggle lights to target pattern using XOR arithmetic (mod 2)
+- **Part 2**: Increment counters to target joltages using integer addition
+- **Challenge**: Recognizing that pressing a button twice in Part 1 = no effect (XOR property: x ⊕ x = 0)
+- **Algorithm Part 1**: Gaussian elimination over GF(2) with XOR row operations, try all 2^k free variable combinations
+- **Algorithm Part 2**: Integer Linear Programming with OR-Tools SCIP solver
+- **Mathematics**: GF(2) is Galois Field where 1+1=0, entirely different from regular integers
+- **Why ILP?**: Continuous LP with rounding violates constraints - need true integer optimization
+- **Technique**: Path compression in union-find... wait, wrong problem! Use augmented matrix [A | b] form
+- **Pitfall**: Can't reuse Part 1 solution for Part 2 - toggle (XOR) ≠ increment (addition)
+- **Final Answers**: Part 1 = 449, Part 2 = 17,848 (sum across 162 machines)
+- **Learned**: OR-Tools for ILP, scipy.optimize.milp as alternative, importance of matching algorithm to problem structure
 
 ---
 
